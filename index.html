@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Báo cáo Bàn giao | ISC Digitalization Division</title>
+    <meta name="description" content="Báo cáo bàn giao toàn diện — Nguyễn Duy Khánh, Senior Data Engineer, Ban Số Hóa ISC">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+/* =============================================
+   DESIGN SYSTEM — Deep Navy + Gold
+   ISC Handover Report · DK Nguyen
+   ============================================= */
+:root {
+  --bg-main: #0f1923;
+  --bg-surface: #162336;
+  --bg-card: #1a2f4a;
+  --bg-card-hover: #223d5c;
+  --gold: #e8a020;
+  --gold-bright: #f5c842;
+  --gold-muted: #a06010;
+  --gold-glow: rgba(232, 160, 32, 0.20);
+  --gold-border: rgba(232, 160, 32, 0.38);
+  --text-main: #e8edf8;
+  --text-body: #c8d6ee;
+  --text-muted: #7e8bb3;
+  --text-heading: #f0f4ff;
+  --red: #ff6b6b;
+  --red-bg: rgba(255, 107, 107, 0.12);
+  --green: #64ffda;
+  --green-bg: rgba(100, 255, 218, 0.10);
+  --yellow: #ffd700;
+  --blue-accent: #57cbff;
+  --orange: #ffac45;
+  --border: rgba(100, 140, 220, 0.22);
+  --border-light: rgba(100, 140, 220, 0.14);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'Fira Code', 'Courier New', monospace;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow-gold: 0 0 30px rgba(232,160,32,0.25);
+  --shadow-glow-gold-lg: 0 0 50px rgba(232,160,32,0.15), 0 0 15px rgba(232,160,32,0.2);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 2rem; }
+
+body {
+  font-family: var(--font-body);
+  background:
+    radial-gradient(ellipse 600px 400px at 70% 5%, rgba(232,160,32,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 10% 60%, rgba(232,160,32,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 400px 300px at 85% 80%, rgba(232,160,32,0.03) 0%, transparent 60%),
+    radial-gradient(circle at 20% 30%, #121f30, var(--bg-main));
+  color: var(--text-main);
+  line-height: 1.7;
+  display: flex;
+  padding-left: 270px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: padding-left 0.3s ease;
+}
+
+/* ===== GOLD SUNLIGHT ===== */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  right: -200px;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(245,200,66,0.15) 0%, rgba(232,160,32,0.08) 30%, rgba(232,160,32,0.03) 55%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+main { position: relative; z-index: 1; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 270px;
+  background: rgba(8, 14, 28, 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  height: 100vh;
+  position: fixed;
+  left: 0; top: 0;
+  border-right: 1px solid rgba(232,160,32,0.18);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+}
+.sidebar-brand {
+  padding: 1.75rem 1.25rem 1.25rem;
+  border-bottom: 1px solid rgba(232,160,32,0.12);
+}
+.brand-logo {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+  color: #050d1a;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 2px;
+  margin-bottom: 0.6rem;
+  box-shadow: 0 2px 12px rgba(232,160,32,0.3);
+}
+.brand-sub {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 0.2rem;
+  line-height: 1.3;
+}
+.brand-meta {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.sidebar nav {
+  flex: 1;
+  padding: 1rem 0.6rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 1rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+}
+.sidebar nav a i {
+  width: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.sidebar nav a:hover {
+  color: var(--text-main);
+  background: rgba(232,160,32,0.07);
+  transform: translateX(2px);
+}
+.sidebar nav a:hover i { opacity: 1; color: var(--gold); }
+.sidebar nav a.active {
+  color: var(--gold-bright);
+  background: linear-gradient(90deg, var(--gold-glow), transparent);
+  border-left: 3px solid var(--gold);
+  font-weight: 600;
+}
+.sidebar nav a.active i { opacity: 1; color: var(--gold-bright); }
+
+.sidebar-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(232,160,32,0.1);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ===== HAMBURGER (mobile) ===== */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 1rem; left: 1rem;
+  z-index: 200;
+  width: 46px; height: 46px;
+  border-radius: var(--radius-sm);
+  background: rgba(15, 26, 48, 0.9);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  font-size: 1.2rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+.hamburger:hover { background: var(--gold-glow); }
+
+/* ===== MAIN CONTENT ===== */
+main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+}
+
+/* ===== HERO / PAGE HEADER ===== */
+.page-hero {
+  padding: 3.5rem 3rem 2.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% -10%, rgba(232,160,32,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(232,160,32,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.page-hero > * { position: relative; z-index: 1; }
+.eyebrow {
+  display: inline-block;
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.6rem;
+}
+.page-hero h1 {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--text-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--text-body);
+  max-width: 600px;
+  line-height: 1.6;
+}
+.text-gradient {
+  background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Badges */
+.badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.badge {
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.badge-glass { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-body); }
+.badge-gold { background: rgba(232,160,32,0.12); border: 1px solid var(--gold-border); color: var(--gold-bright); }
+
+/* ===== SECTIONS ===== */
+.section-container {
+  padding: 3rem 3rem;
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+}
+.section-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 3rem;
+  right: 3rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232,160,32,0.25), transparent);
+}
+.section-container:last-child { border-bottom: none; }
+.section-container:last-child::after { display: none; }
+.section-header { margin-bottom: 1.75rem; }
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  color: var(--text-heading);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-weight: 700;
+}
+.section-header h2 i { color: var(--gold); font-size: 1.15rem; filter: drop-shadow(0 0 6px rgba(232,160,32,0.4)); }
+.divider {
+  height: 3px; width: 70px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright), transparent);
+  border-radius: 2px;
+  margin-top: 0.6rem;
+  box-shadow: 0 0 8px rgba(232,160,32,0.3);
+}
+h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--text-heading); font-weight: 600; }
+h4 { font-size: 0.95rem; font-weight: 600; color: var(--text-heading); }
+p { color: var(--text-body); line-height: 1.75; }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid rgba(100,130,200,0.12);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--gold-border);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card), var(--shadow-glow-gold);
+}
+.card-gold {
+  border: 1px solid var(--gold-border);
+  background: linear-gradient(135deg, var(--bg-card), rgba(232,160,32,0.06));
+}
+.standout-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  border-left: 4px solid var(--gold);
+  background: linear-gradient(to right, rgba(232,160,32,0.08), transparent);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.feature-card {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(100,130,200,0.12);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.feature-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--gold-border);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card), var(--shadow-glow-gold-lg);
+}
+
+/* KPI Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+.kpi-card {
+  background: linear-gradient(145deg, #1a2f4a, #0f1923);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: var(--transition);
+}
+.kpi-card:hover {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-glow-gold-lg);
+  transform: translateY(-5px);
+}
+.kpi-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--gold-bright);
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 0 20px rgba(232,160,32,0.3);
+}
+.kpi-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== GRIDS ===== */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+
+/* ===== TRAFFIC LIGHTS ===== */
+.traffic-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+.traffic-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+.traffic-item:hover {
+  border-color: var(--gold-border);
+  box-shadow: 0 0 12px rgba(232,160,32,0.08);
+  transform: translateX(3px);
+}
+.traffic-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-green { background: var(--green); box-shadow: 0 0 8px #64ffda; }
+.dot-yellow { background: var(--yellow); box-shadow: 0 0 8px #ffd700; }
+.dot-red { background: var(--red); box-shadow: 0 0 8px #ff6b6b; }
+
+/* ===== TIMELINE BAR ===== */
+.timeline-bar {
+  display: flex;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 1.5rem 0;
+  height: 48px;
+  border: 1px solid var(--border);
+}
+.tbar-phase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0 1rem;
+  white-space: nowrap;
+}
+.tbar-1 { background: linear-gradient(135deg, #1a3a5c, #245080); color: var(--gold-bright); flex: 3; }
+.tbar-2 { background: linear-gradient(135deg, #0e2848, #163858); color: var(--text-body); flex: 5; border-left: 1px solid var(--gold-border); }
+.tbar-3 { background: var(--bg-card); color: var(--text-muted); flex: 2; border-left: 1px solid var(--border); }
+
+/* ===== PEOPLE CARDS ===== */
+.people-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.person-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+  transition: var(--transition);
+}
+.person-card:hover { border-color: var(--gold-border); transform: translateY(-3px); box-shadow: var(--shadow-glow-gold); }
+.person-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--gold-glow);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+  font-size: 1rem;
+  box-shadow: 0 0 15px rgba(232,160,32,0.2);
+}
+.person-name { font-weight: 600; color: var(--text-heading); font-size: 0.9rem; }
+.person-role { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+/* ===== TABLES ===== */
+.table-container {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+}
+.modern-table th {
+  background: linear-gradient(135deg, #070f20, #0a1628);
+  color: var(--gold);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gold-border);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+.modern-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-size: 0.84rem;
+  vertical-align: middle;
+}
+.modern-table tr:last-child td { border-bottom: none; }
+.modern-table tbody tr:hover { background: rgba(232,160,32,0.06); box-shadow: inset 3px 0 0 var(--gold); }
+
+/* Risk badges */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.risk-high { background: rgba(255,107,107,0.15); color: var(--red); border: 1px solid rgba(255,107,107,0.3); }
+.risk-medium { background: rgba(255,215,0,0.1); color: var(--yellow); border: 1px solid rgba(255,215,0,0.25); }
+.risk-low { background: var(--green-bg); color: var(--green); border: 1px solid rgba(100,255,218,0.2); }
+
+/* Status tags */
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.tag-running { background: var(--green-bg); color: var(--green); border: 1px solid rgba(100,255,218,0.2); }
+.tag-progress { background: rgba(255,215,0,0.1); color: var(--yellow); border: 1px solid rgba(255,215,0,0.25); }
+.tag-pending { background: rgba(87,203,255,0.1); color: var(--blue-accent); border: 1px solid rgba(87,203,255,0.2); }
+.tag-done { background: var(--green-bg); color: var(--green); border: 1px solid rgba(100,255,218,0.2); }
+
+/* ===== PROJECT CARDS ===== */
+.project-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(100,130,200,0.12);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+  transition: var(--transition);
+}
+.project-card:hover {
+  border-color: var(--gold-border);
+  box-shadow: var(--shadow-card), 0 0 20px rgba(232,160,32,0.1);
+  transform: translateY(-2px);
+}
+.project-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.project-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--gold-glow);
+  color: var(--gold-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.project-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--text-heading);
+  font-weight: 600;
+}
+.project-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: auto;
+  font-family: var(--font-mono);
+}
+.project-body { font-size: 0.88rem; color: var(--text-body); }
+.project-body ul { list-style: none; padding: 0; margin: 0.5rem 0; }
+.project-body li {
+  padding: 0.3rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+  font-size: 0.84rem;
+}
+.project-body li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* Module sub-cards */
+.module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin: 1rem 0; }
+.module-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  font-size: 0.82rem;
+  transition: var(--transition);
+}
+.module-card:hover { border-color: var(--gold-border); transform: translateY(-2px); box-shadow: 0 0 15px rgba(232,160,32,0.1); }
+.module-name {
+  font-weight: 700;
+  color: var(--gold-bright);
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+.module-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 0.4rem;
+}
+.module-detail { color: var(--text-body); font-size: 0.78rem; line-height: 1.5; }
+.module-key {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--blue-accent);
+  background: rgba(87,203,255,0.08);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  display: inline-block;
+  margin-top: 0.3rem;
+}
+
+/* ===== ARCHITECTURE DIAGRAM ===== */
+.arch-diagram {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-body);
+  line-height: 1.8;
+  overflow-x: auto;
+  white-space: pre;
+}
+.arch-diagram .hl { color: var(--gold-bright); font-weight: 600; }
+.arch-diagram .bl { color: var(--blue-accent); }
+.arch-diagram .gr { color: var(--green); }
+
+/* ===== GANTT BAR ===== */
+.gantt-wrap { margin: 1.5rem 0; }
+.gantt-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.gantt-label {
+  width: 80px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+  padding-right: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.gantt-track {
+  flex: 1;
+  height: 28px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+}
+.gantt-fill {
+  position: absolute;
+  top: 0; bottom: 0;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #050d1a;
+}
+.gantt-fill.gd1 { left: 0; width: 28%; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); }
+.gantt-fill.gd2 { left: 28%; width: 52%; background: linear-gradient(90deg, #245080, #1a3a5c); color: var(--text-body); }
+.gantt-fill.gd3 { left: 80%; width: 20%; background: var(--bg-card); color: var(--text-muted); border-left: 1px solid var(--border); }
+
+/* ===== CHECKLIST ===== */
+.checklist { list-style: none; padding: 0; margin: 1rem 0; }
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.4rem 0;
+  font-size: 0.84rem;
+  color: var(--text-body);
+}
+.checklist li::before {
+  content: '✓';
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+/* ===== DEPENDENCY MAP ===== */
+.dep-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.dep-icon {
+  color: var(--red);
+  font-size: 1rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+.dep-trigger { font-weight: 600; color: var(--text-heading); font-size: 0.84rem; }
+.dep-effect { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-progress {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.25rem;
+  bottom: 1.5rem;
+  width: 4px;
+  z-index: 150;
+  background: rgba(100,140,220,0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.scroll-progress-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold), var(--gold-muted));
+  transform-origin: top;
+  transform: scaleY(0);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 10px rgba(232,160,32,0.5), -3px 0 15px rgba(232,160,32,0.15);
+}
+/* Glow dot at fill tip */
+.scroll-progress-fill::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  box-shadow: 0 0 12px rgba(245,200,66,0.6), 0 0 4px rgba(245,200,66,0.8);
+}
+
+/* ===== BACK TO TOP ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2.75rem;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #050d1a;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition);
+  z-index: 90;
+}
+.back-to-top.visible { opacity: 1; pointer-events: auto; }
+.back-to-top:hover { background: var(--gold-bright); transform: translateY(-3px); box-shadow: 0 0 25px rgba(232,160,32,0.5); }
+
+/* ===== SIGN-OFF ===== */
+.sign-off {
+  background: linear-gradient(135deg, var(--bg-surface), rgba(232,160,32,0.04));
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  margin-top: 2rem;
+  box-shadow: 0 0 25px rgba(232,160,32,0.08);
+}
+.sign-off p {
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+.sign-off strong { color: var(--text-heading); }
+
+/* ===== IMPACT BAR ===== */
+.impact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+}
+.impact-badge {
+  padding: 0.3rem 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.73rem;
+  color: var(--text-body);
+  font-weight: 500;
+}
+
+/* ===== UTILITY ===== */
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.text-muted { color: var(--text-muted); }
+.text-sm { font-size: 0.82rem; }
+.font-mono { font-family: var(--font-mono); }
+.text-gold { color: var(--gold); }
+
+/* ===== PROGRESS BARS ===== */
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+.progress-label {
+  font-size: 0.78rem;
+  color: var(--text-body);
+  min-width: 180px;
+  font-weight: 500;
+}
+.progress-track {
+  flex: 1;
+  height: 10px;
+  background: rgba(100, 140, 220, 0.12);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  transition: width 1.2s ease;
+  box-shadow: 0 0 10px rgba(232,160,32,0.4);
+}
+.progress-pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gold-bright);
+  min-width: 40px;
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+/* ===== AUTOMATION SCHEDULE ===== */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+.schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+.schedule-item:hover { border-color: var(--gold-border); box-shadow: 0 0 15px rgba(232,160,32,0.1); transform: translateY(-2px); }
+.schedule-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--gold-glow);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(232,160,32,0.2);
+}
+.schedule-info { flex: 1; }
+.schedule-name { font-weight: 600; font-size: 0.82rem; color: var(--text-heading); }
+.schedule-freq { font-size: 0.72rem; color: var(--text-muted); }
+.schedule-time {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--gold-bright);
+  font-weight: 600;
+}
+
+/* ===== ARCHITECTURE VISUAL DIAGRAM ===== */
+.arch-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.arch-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.arch-node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-heading);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.arch-node:hover { border-color: var(--gold-border); transform: translateY(-2px); box-shadow: 0 0 18px rgba(232,160,32,0.15); }
+.arch-node i { color: var(--gold); font-size: 0.9rem; }
+.arch-node.node-primary {
+  border-color: var(--gold-border);
+  background: linear-gradient(135deg, var(--bg-card), rgba(232,160,32,0.08));
+}
+.arch-node.node-primary .arch-node-sub { color: var(--gold-bright); }
+.arch-node-sub {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 0.1rem;
+}
+.arch-arrow {
+  color: var(--gold);
+  font-size: 1.1rem;
+  opacity: 0.6;
+}
+.arch-stats {
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+.arch-outputs {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  body { padding-left: 0; }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .hamburger { display: flex; }
+  .page-hero, .section-container { padding: 2rem 1.25rem; }
+  .page-hero h1 { font-size: 1.6rem; }
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  .grid-2, .grid-3, .people-grid, .traffic-grid, .schedule-grid { grid-template-columns: 1fr; }
+  .module-grid { grid-template-columns: 1fr; }
+  .arch-row { flex-direction: column; }
+  .arch-outputs { flex-direction: column; align-items: center; }
+  .table-container { overflow-x: auto; }
+  .modern-table { min-width: 550px; }
+}
+@media (max-width: 600px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .badges { flex-direction: column; align-items: flex-start; }
+  .impact-row { flex-direction: column; }
+  .timeline-bar { flex-direction: column; height: auto; }
+  .tbar-phase { padding: 0.6rem 1rem; }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  .sidebar, .hamburger, .back-to-top { display: none !important; }
+  body { padding-left: 0 !important; background: #fff; color: #111; }
+  .page-hero, .section-container { padding: 1.5rem 0; }
+  .card, .feature-card, .project-card, .kpi-card, .module-card, .person-card {
+    background: #f8f9fa; border: 1px solid #ddd; box-shadow: none;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .section-container { page-break-inside: avoid; }
+  .kpi-value { color: #b07000; }
+  h1, h2, h3, h4, .section-header h2, .project-title, .person-name { color: #111; }
+  p, td, .text-body { color: #333; }
+  .modern-table th { background: #e8e8e8; color: #333; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+    </style>
+</head>
+<body>
+
+<!-- ===== HAMBURGER BUTTON ===== -->
+<button class="hamburger" id="hamburger" aria-label="Menu">
+    <i class="fa-solid fa-bars"></i>
+</button>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <span class="brand-logo">ISC</span>
+        <span class="brand-sub">Báo cáo Bàn giao Toàn diện</span>
+        <span class="brand-meta">Nguyễn Duy Khánh · Mar 2026</span>
+    </div>
+    <nav>
+        <a href="#dashboard" class="active"><i class="fa-solid fa-gauge-high"></i> <span>0. Tổng quan / Dashboard</span></a>
+        <a href="#projects"><i class="fa-solid fa-diagram-project"></i> <span>1. Dự án / Projects</span></a>
+        <a href="#architecture"><i class="fa-solid fa-server"></i> <span>2. Kiến trúc / Architecture</span></a>
+        <a href="#handover"><i class="fa-solid fa-clipboard-check"></i> <span>3. Bàn giao / Handover</span></a>
+        <a href="#risk"><i class="fa-solid fa-shield-halved"></i> <span>4. Rủi ro / Risk</span></a>
+        <a href="#users"><i class="fa-solid fa-users"></i> <span>5. Người dùng / Users</span></a>
+        <a href="#support"><i class="fa-solid fa-headset"></i> <span>6. Hỗ trợ / Support</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        ISC Digitalization Division · 2026
+    </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main>
+
+<!-- ============================================================
+     SECTION 0: EXECUTIVE DASHBOARD
+     ============================================================ -->
+<section id="dashboard">
+    <div class="page-hero">
+        <span class="eyebrow"><i class="fa-solid fa-file-contract" style="margin-right:0.3rem;"></i> Báo cáo bàn giao · Handover Report · March 2026</span>
+        <h1>Bàn giao <span class="text-gradient">Toàn diện</span></h1>
+        <p class="hero-subtitle">Nguyễn Duy Khánh — Senior Data Engineer, Ban Số Hóa (Digitalization Division)</p>
+        <div class="badges">
+            <span class="badge badge-glass"><i class="fa-solid fa-building"></i> ISC Company</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-calendar"></i> Sep 2025 – Apr 2026</span>
+            <span class="badge badge-glass"><i class="fa-solid fa-clock"></i> 7 Tháng / Months</span>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <!-- KPI Cards -->
+        <div class="kpi-grid mb-8">
+            <div class="kpi-card">
+                <div class="kpi-value">60+</div>
+                <div class="kpi-label">Bảng dữ liệu<br>Database Tables</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">58</div>
+                <div class="kpi-label">Stored<br>Procedures</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">42</div>
+                <div class="kpi-label">SQL Assets<br>Deployed</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">$1,118</div>
+                <div class="kpi-label">Chi phí /năm<br>Annual Budget</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">14+</div>
+                <div class="kpi-label">Giờ tiết kiệm /tuần<br>Hours Saved /wk</div>
+            </div>
+        </div>
+
+        <!-- Impact Badges -->
+        <div class="badges mb-8">
+            <span class="badge badge-gold"><i class="fa-solid fa-arrow-down"></i> 30% capital reduction</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-bolt"></i> >50% time saved</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-gauge"></i> <5s query response</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-building"></i> 10 departments</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-users"></i> 30+ users</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-chart-line"></i> ~$61k/year ROI potential</span>
+        </div>
+
+        <!-- System Health Traffic Lights -->
+        <h3 class="mb-4"><i class="fa-solid fa-signal" style="color:var(--gold); margin-right:0.5rem;"></i>Trạng thái Hệ thống / System Health</h3>
+        <div class="traffic-grid mb-8">
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> BigQuery Data Warehouse — Self-running</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> ETL Pipelines — Self-running</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> AppScript SC Alerts — Self-running</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> M2 Nightly MRP (4 AM) — Self-running</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> M4 Stock AutoSync (5-min) — Self-running</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> Looker Studio Dashboards — Self-running</div>
+            <div class="traffic-item"><span class="traffic-dot dot-yellow"></span> Weekly Report Automation — Needs content input</div>
+            <div class="traffic-item"><span class="traffic-dot dot-yellow"></span> Phase 5 BOM Aggregation — 80% complete</div>
+            <div class="traffic-item"><span class="traffic-dot dot-yellow"></span> Phase 8 Tolerance — 90% complete</div>
+            <div class="traffic-item"><span class="traffic-dot dot-red"></span> Department Expansion — Needs new developer</div>
+        </div>
+
+        <!-- Timeline Bar -->
+        <h3 class="mb-4"><i class="fa-solid fa-timeline" style="color:var(--gold); margin-right:0.5rem;"></i>Lộ trình Bàn giao / Handover Timeline</h3>
+        <div class="timeline-bar">
+            <div class="tbar-phase tbar-1">GĐ 1: Tại VP (27/3 – 3/4)</div>
+            <div class="tbar-phase tbar-2">GĐ 2: Hỗ trợ từ xa (4/4 – 25/4)</div>
+            <div class="tbar-phase tbar-3">GĐ 3: Ad-hoc</div>
+        </div>
+
+        <!-- Key People -->
+        <h3 class="mb-4 mt-8"><i class="fa-solid fa-user-group" style="color:var(--gold); margin-right:0.5rem;"></i>Người liên quan / Key People</h3>
+        <div class="people-grid">
+            <div class="person-card">
+                <div class="person-icon"><i class="fa-solid fa-eye"></i></div>
+                <div class="person-name">Hồ Nam</div>
+                <div class="person-role">Giám sát bàn giao<br>Handover Supervisor</div>
+            </div>
+            <div class="person-card">
+                <div class="person-icon"><i class="fa-solid fa-wrench"></i></div>
+                <div class="person-name">Hưng</div>
+                <div class="person-role">Tiếp nhận kỹ thuật<br>IT Admin</div>
+            </div>
+            <div class="person-card">
+                <div class="person-icon"><i class="fa-solid fa-crown"></i></div>
+                <div class="person-name">Kent Huỳnh</div>
+                <div class="person-role">Lãnh đạo phê duyệt<br>Executive Approval</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION 1: PROJECT INVENTORY
+     ============================================================ -->
+<section id="projects">
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-diagram-project"></i> 1. Danh mục Dự án / Project Inventory</h2>
+            <div class="divider"></div>
+        </div>
+
+        <!-- Project 1: Supply Chain Data Hub -->
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-num">1</div>
+                <div class="project-title">ISC Supply Chain Data Hub</div>
+                <div class="project-date">Sep 2025 – Mar 2026</div>
+            </div>
+            <div class="project-body">
+                <p>Xây dựng hệ thống data warehouse toàn diện trên Google BigQuery với <strong style="color:var(--gold-bright);">60+ bảng</strong>, <strong style="color:var(--gold-bright);">58 stored procedures</strong>, phục vụ 20+ thị trường quốc tế.</p>
+
+                <div class="module-grid">
+                    <div class="module-card">
+                        <div class="module-name">M1: "The Demand Engine"</div>
+                        <div class="module-sub">Động cơ Nhu cầu · Oct 2025</div>
+                        <div class="module-detail">18 tables, BOM mastering, CS status sync, anomaly detection</div>
+                        <span class="module-key">BOM_Order_List_Draft/Final</span>
+                        <span class="module-key">Material_Demand_VIEW</span>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-name">M2: "The Brain"</div>
+                        <div class="module-sub">Bộ não Cân bằng · Nov 2025</div>
+                        <div class="module-detail">FIFO allocation, 10 logic tables, nightly 4 AM MRP trigger</div>
+                        <span class="module-key">SP_RUN_MATCHING_ENGINE</span>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-name">M3: "The Automated Buyer"</div>
+                        <div class="module-sub">Người Mua Tự động · Dec 2025</div>
+                        <div class="module-detail">Single-sweep purchasing, PR→PO consolidation, supplier hub</div>
+                        <span class="module-key">PR_Staging</span>
+                        <span class="module-key">DRAFT_PR</span>
+                        <span class="module-key">SP_SPLIT_BATCH_GATE</span>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-name">M4: "The Truth Engine"</div>
+                        <div class="module-sub">Động cơ Sự thật · Jan 2026</div>
+                        <div class="module-detail">5-stage delivery waterfall, stock sync (5-min), issuance sync</div>
+                        <span class="module-key">SP_M4_ISSUANCE_MERGE</span>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="progress-wrap">
+                        <span class="progress-label">Phase 5: BOM Aggregation 🟡</span>
+                        <div class="progress-track"><div class="progress-fill" data-width="80%"></div></div>
+                        <span class="progress-pct">80%</span>
+                    </div>
+                    <div class="progress-wrap">
+                        <span class="progress-label">Phase 8: Tolerance Resolution 🟡</span>
+                        <div class="progress-track"><div class="progress-fill" data-width="90%"></div></div>
+                        <span class="progress-pct">90%</span>
+                    </div>
+                    <p class="text-sm text-muted mt-4">8 phases total · 6 complete ✅ · 2 in progress 🟡</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project 2: Weekly Report -->
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-num">2</div>
+                <div class="project-title">Weekly 5W-2H Report Automation</div>
+                <div class="project-date">Mar 2026</div>
+            </div>
+            <div class="project-body">
+                <ul>
+                    <li>AppScript: Code.gs V7 + SheetBuilder.gs V7</li>
+                    <li>Google Sheet: <span class="font-mono" style="color:var(--blue-accent);">ISC_DigitalizationReport_4PMFriday</span></li>
+                    <li>Auto-trigger: Friday 7 AM → rich HTML email → Gmail label → auto-log</li>
+                    <li>28-cell Weekly_Input (hidden/protected), 14-column department roadmap matrix</li>
+                    <li>Review gate: dk@isconline.vn (staging) → kent@isconline.vn (production)</li>
+                    <li>Kaizen scoreboard: tracks waste elimination metrics weekly</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Project 3: Assign Sourcing Analysis -->
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-num">3</div>
+                <div class="project-title">Assign Sourcing Analysis / Report_Nam</div>
+                <div class="project-date">Feb – Mar 2026</div>
+            </div>
+            <div class="project-body">
+                <ul>
+                    <li>Multi-page HTML analysis report for Nam Ho</li>
+                    <li>3 root causes identified: P1 Tolerance Mismatch, P2 VPO Fragmentation (50% waste), P3 Warehouse Issuance</li>
+                    <li>~20 SQL validation queries written and verified</li>
+                    <li>Solutions designed with implementation phases</li>
+                    <li>Pilot validation: Ngàn running 52 materials in production</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Project 4: OpenClaw -->
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-num">4</div>
+                <div class="project-title">OpenClaw AI Strategic Evaluation</div>
+                <div class="project-date">Jan – Feb 2026</div>
+            </div>
+            <div class="project-body">
+                <ul>
+                    <li>Multi-page HTML report prepared for CEO Kent</li>
+                    <li>Verdict: <strong style="color:var(--red);">DO NOT DEPLOY</strong> — 3 critical security risks</li>
+                    <li>Alternative proven: BigQuery + AppScript + Gemini → <strong style="color:var(--green);">$61k+/year</strong> potential ROI</li>
+                    <li>14+ hours/week already saved in Supply Chain alone</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Project 5: TanLien -->
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-num">5</div>
+                <div class="project-title">TanLien Salary Intelligence / "Gravity Research Pipeline"</div>
+                <div class="project-date">Mar 2026</div>
+            </div>
+            <div class="project-body">
+                <ul>
+                    <li>HR competitive analysis: 21 companies, Tân Liên A industrial cluster</li>
+                    <li>ISC positioning: 10.275M avg vs market 7–14M range</li>
+                    <li>Competitor intelligence: Shin-Etsu, IWAHASHI, Top-Chip (Japanese FDI +10–15%)</li>
+                    <li>11 cited sources, unverified fields flagged "?" for HR follow-up</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Project 6: SOP Pipeline -->
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-num">6</div>
+                <div class="project-title">SOP AI-Hybrid Process Mapping Pipeline</div>
+                <div class="project-date">Jan 2026</div>
+            </div>
+            <div class="project-body">
+                <ul>
+                    <li>Gemini AI + Mermaid + draw.io — zero cost</li>
+                    <li>Transforms 23-step branching workflows → interactive diagrams</li>
+                    <li>Applicable across all departments</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Project 7: DT Strategy -->
+        <div class="project-card">
+            <div class="project-header">
+                <div class="project-num">7</div>
+                <div class="project-title">Digital Transformation Research & Strategy</div>
+                <div class="project-date">Jan – Mar 2026</div>
+            </div>
+            <div class="project-body">
+                <ul>
+                    <li>QR Code vs Barcode traceability evaluation</li>
+                    <li>5W-2H reporting framework design for Kent</li>
+                    <li>Enterprise scaling roadmap: SC → MPL → CS → PRD → QC → Finance → HR</li>
+                    <li>Budget: $1,118.34/year ($33.21 BigQuery + $59.99 AI + $0 onboarding)</li>
+                    <li>Presented to General Management (19-slide PPTX)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2: TECHNICAL ARCHITECTURE
+     ============================================================ -->
+<section id="architecture">
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-server"></i> 2. Kiến trúc Kỹ thuật / Technical Architecture</h2>
+            <div class="divider"></div>
+        </div>
+
+        <!-- System Diagram -->
+        <h3 class="mb-4">Sơ đồ Hệ thống / System Interconnection</h3>
+        <div class="arch-visual mb-8">
+            <!-- Input Layer -->
+            <div class="arch-row">
+                <div class="arch-node"><i class="fa-solid fa-table"></i> Google Sheets<span class="arch-node-sub">Input Sources</span></div>
+                <span class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                <div class="arch-node"><i class="fa-brands fa-python"></i> Python ETL<span class="arch-node-sub">Validation · Transform</span></div>
+                <span class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                <div class="arch-node node-primary"><i class="fa-solid fa-database"></i> BigQuery<span class="arch-node-sub">boxwood-charmer-473204-k8</span></div>
+            </div>
+            <!-- BigQuery Stats -->
+            <div class="arch-stats">
+                <span class="badge badge-gold"><i class="fa-solid fa-table-cells"></i> 60+ tables</span>
+                <span class="badge badge-gold"><i class="fa-solid fa-code"></i> 58 SPs</span>
+                <span class="badge badge-gold"><i class="fa-solid fa-layer-group"></i> 42 SQL assets</span>
+            </div>
+            <span class="arch-arrow"><i class="fa-solid fa-arrow-down"></i></span>
+            <!-- Output Layer -->
+            <div class="arch-outputs">
+                <div class="arch-node"><i class="fa-solid fa-chart-pie"></i> Looker Studio<span class="arch-node-sub">Dashboards</span></div>
+                <div class="arch-node"><i class="fa-solid fa-bell"></i> AppScript SC<span class="arch-node-sub">Alerts → Purchasing</span></div>
+                <div class="arch-node"><i class="fa-solid fa-envelope"></i> AppScript Report<span class="arch-node-sub">Weekly → Kent</span></div>
+                <div class="arch-node"><i class="fa-solid fa-clock"></i> M2 MRP<span class="arch-node-sub">4 AM Nightly</span></div>
+                <div class="arch-node"><i class="fa-solid fa-rotate"></i> M4 Sync<span class="arch-node-sub">Every 5 min</span></div>
+            </div>
+        </div>
+
+        <!-- BigQuery Infrastructure -->
+        <h3 class="mb-4">BigQuery Infrastructure</h3>
+        <div class="card card-gold mb-6" style="display:flex; gap:2rem; flex-wrap:wrap;">
+            <div>
+                <div class="text-sm text-muted">Project ID</div>
+                <div class="font-mono" style="color:var(--blue-accent);">boxwood-charmer-473204-k8</div>
+            </div>
+            <div>
+                <div class="text-sm text-muted">Dataset</div>
+                <div class="font-mono" style="color:var(--blue-accent);">isc_scm_ops</div>
+            </div>
+            <div>
+                <div class="text-sm text-muted">Cost</div>
+                <div>~$15/month (SC) · expandable ~$50/month</div>
+            </div>
+        </div>
+
+        <!-- Key Database Assets -->
+        <h3 class="mb-4">Database Assets</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>Category</th><th>Assets</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Core Tables</td><td><span class="font-mono" style="color:var(--blue-accent);">BOM_Order_List_Draft</span>, <span class="font-mono" style="color:var(--blue-accent);">BOM_Order_List_Final</span>, <span class="font-mono" style="color:var(--blue-accent);">Material_Issuance</span></td></tr>
+                    <tr><td>Views</td><td><span class="font-mono" style="color:var(--blue-accent);">Material_Demand_VIEW</span> (dual shortage), <span class="font-mono" style="color:var(--blue-accent);">Sourcing_Feed_Aggregated_VIEW</span></td></tr>
+                    <tr><td>Staging</td><td><span class="font-mono" style="color:var(--blue-accent);">PR_Staging</span>, <span class="font-mono" style="color:var(--blue-accent);">DRAFT_PR</span> (16 columns post-Phase 3)</td></tr>
+                    <tr><td>Procedures</td><td><span class="font-mono" style="color:var(--blue-accent);">SP_RUN_MATCHING_ENGINE</span>, <span class="font-mono" style="color:var(--blue-accent);">SP_M4_ISSUANCE_MERGE</span>, <span class="font-mono" style="color:var(--blue-accent);">SP_SPLIT_BATCH_GATE</span></td></tr>
+                    <tr><td>Config</td><td><span class="font-mono" style="color:var(--blue-accent);">Config_Schema.txt</span>, <span class="font-mono" style="color:var(--blue-accent);">SQL_Vault.txt</span> (master SQL inventory)</td></tr>
+                    <tr><td>New Fields (Phase 3)</td><td><span class="font-mono" style="color:var(--blue-accent);">NET_SHORTAGE_QTY_NO_TOL</span>, <span class="font-mono" style="color:var(--blue-accent);">CS_BOM_TOLERANCE_PCT</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- AppScript Systems -->
+        <h3 class="mb-4">AppScript Systems</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>System</th><th>Codebase</th><th>Trigger</th><th>Function</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>SC Automation</td><td>Bound scripts in data sheets</td><td>Event-based + time-based</td><td>Shortage alerts, escalation, M4 sync</td></tr>
+                    <tr><td>Weekly Report</td><td>Code.gs V7 + SheetBuilder.gs V7</td><td>Friday 7 AM</td><td>HTML email → Kent, auto-log</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Automation Schedule -->
+        <h3 class="mb-4"><i class="fa-solid fa-clock text-gold"></i> Lịch Tự động hóa / Automation Schedule</h3>
+        <div class="schedule-grid mb-8">
+            <div class="schedule-item">
+                <div class="schedule-icon"><i class="fa-solid fa-calculator"></i></div>
+                <div class="schedule-info">
+                    <div class="schedule-name">M2 Nightly MRP</div>
+                    <div class="schedule-freq">Hàng ngày / Daily</div>
+                </div>
+                <div class="schedule-time">4:00 AM</div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-icon"><i class="fa-solid fa-rotate"></i></div>
+                <div class="schedule-info">
+                    <div class="schedule-name">M4 Stock AutoSync</div>
+                    <div class="schedule-freq">Liên tục / Continuous</div>
+                </div>
+                <div class="schedule-time">Every 5 min</div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="schedule-info">
+                    <div class="schedule-name">Weekly Report Email</div>
+                    <div class="schedule-freq">Hàng tuần / Weekly</div>
+                </div>
+                <div class="schedule-time">Fri 7:00 AM</div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-icon"><i class="fa-solid fa-bell"></i></div>
+                <div class="schedule-info">
+                    <div class="schedule-name">SC Shortage Alerts</div>
+                    <div class="schedule-freq">Theo sự kiện / Event-based</div>
+                </div>
+                <div class="schedule-time">On trigger</div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+                <div class="schedule-info">
+                    <div class="schedule-name">M4 Issuance Sync</div>
+                    <div class="schedule-freq">Theo sự kiện / Event-based</div>
+                </div>
+                <div class="schedule-time">On change</div>
+            </div>
+            <div class="schedule-item">
+                <div class="schedule-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="schedule-info">
+                    <div class="schedule-name">M4 Monday Stock Protocol</div>
+                    <div class="schedule-freq">Hàng tuần / Weekly</div>
+                </div>
+                <div class="schedule-time">Mon AM</div>
+            </div>
+        </div>
+
+        <!-- Weekly Report Config -->
+        <h3 class="mb-4"><i class="fa-solid fa-gear text-gold"></i> Weekly Report Config (REPORT_CONFIG)</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead><tr><th>Key</th><th>Value</th><th>Notes</th></tr></thead>
+                <tbody>
+                    <tr><td class="font-mono">STAGING_EMAIL</td><td class="font-mono" style="color:var(--blue-accent);">dk@isconline.vn</td><td>Change to successor's email</td></tr>
+                    <tr><td class="font-mono">KENT_EMAIL</td><td class="font-mono" style="color:var(--blue-accent);">kent@isconline.vn</td><td>Keep as-is</td></tr>
+                    <tr><td class="font-mono">SEND_TO_KENT</td><td class="font-mono">false</td><td>Set true to send directly to Kent</td></tr>
+                    <tr><td class="font-mono">SHEET_URL</td><td class="font-mono" style="color:var(--blue-accent); font-size:0.72rem;">docs.google.com/spreadsheets/d/1W_F2zw...qU</td><td>ISC_DigitalizationReport_4PMFriday</td></tr>
+                    <tr><td class="font-mono">INPUT_TAB</td><td class="font-mono">Weekly_Input</td><td>Hidden, protected — 17 input cells (B3-B28)</td></tr>
+                    <tr><td class="font-mono">MATRIX_TAB</td><td class="font-mono">5W2H_Matrix</td><td>14-column department roadmap</td></tr>
+                    <tr><td class="font-mono">LOG_TAB</td><td class="font-mono">Report_Log</td><td>Auto-appended audit trail</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Access & Credentials -->
+        <h3 class="mb-4"><i class="fa-solid fa-key text-gold"></i> Danh mục Tài khoản / Access & Credentials</h3>
+        <div class="table-container">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>System</th><th>Account / ID</th><th>Current Owner</th><th>Transfer To</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>BigQuery</td><td class="font-mono" style="color:var(--blue-accent);">boxwood-charmer-473204-k8</td><td>Khánh</td><td>Hưng (IT Admin)</td></tr>
+                    <tr><td>Google Sheets</td><td>ISC_DigitalizationReport + data sheets</td><td>Khánh</td><td>Hưng / Successor</td></tr>
+                    <tr><td>AppScript</td><td>Bound scripts in Sheets</td><td>Khánh</td><td>Hưng</td></tr>
+                    <tr><td>Gmail label</td><td class="font-mono" style="color:var(--blue-accent);">ISC_Weekly_Report</td><td>dk@isconline.vn</td><td>N/A (deactivates)</td></tr>
+                    <tr><td>Looker Studio</td><td>Dashboard IDs</td><td>Khánh</td><td>Hưng / Nam Ho</td></tr>
+                    <tr><td>Code repos</td><td>All with READMEs</td><td>Khánh</td><td>Hưng</td></tr>
+                    <tr><td>Email</td><td class="font-mono" style="color:var(--blue-accent);">dk@isconline.vn</td><td>Khánh</td><td>IT deactivates</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION 3: HANDOVER PLAN
+     ============================================================ -->
+<section id="handover">
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-clipboard-check"></i> 3. Kế hoạch Bàn giao / Handover Plan</h2>
+            <div class="divider"></div>
+        </div>
+
+        <!-- Gantt Bar -->
+        <h3 class="mb-4">Lộ trình / Phase Timeline</h3>
+        <div class="gantt-wrap mb-8">
+            <div class="gantt-row">
+                <div class="gantt-label">Timeline</div>
+                <div class="gantt-track">
+                    <div class="gantt-fill gd1">GĐ 1: 27/3–3/4</div>
+                    <div class="gantt-fill gd2">GĐ 2: 4/4–25/4</div>
+                    <div class="gantt-fill gd3">GĐ 3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 17-Item Checklist Table -->
+        <h3 class="mb-4">Danh mục Bàn giao / Handover Checklist</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>#</th><th>Hạng mục / Item</th><th>GĐ</th><th>Status</th><th>Tài liệu</th><th>Người nhận</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>BigQuery Warehouse — schema + procedures</td><td>1</td><td><span class="status-tag tag-running">✅ Running</span></td><td>ERD + architecture doc</td><td>Hưng</td></tr>
+                    <tr><td>2</td><td>ETL Pipelines — Python code + logic + schedule</td><td>1</td><td><span class="status-tag tag-running">✅ Running</span></td><td>README + code comments</td><td>Hưng</td></tr>
+                    <tr><td>3</td><td>AppScript SC Automation — triggers + alerts</td><td>1</td><td><span class="status-tag tag-running">✅ Self-running</span></td><td>Monitor + troubleshoot guide</td><td>Hưng</td></tr>
+                    <tr><td>4</td><td>Looker Studio Dashboards</td><td>1</td><td><span class="status-tag tag-running">✅ Running</span></td><td>Usage + editing guide</td><td>Hưng / Nam Ho</td></tr>
+                    <tr><td>5</td><td>Weekly Report System — 5W-2H AppScript</td><td>1</td><td><span class="status-tag tag-running">✅ Running</span></td><td>Code.gs docs + config</td><td>Hưng / Nam Ho</td></tr>
+                    <tr><td>6</td><td>5W-2H Report Framework + Templates</td><td>1</td><td><span class="status-tag tag-running">✅ Running</span></td><td>Template + process doc</td><td>Nam Ho</td></tr>
+                    <tr><td>7</td><td>Code repositories (all)</td><td>1→2</td><td><span class="status-tag tag-progress">🟡 Updating</span></td><td>README per repo</td><td>Hưng</td></tr>
+                    <tr><td>8</td><td>Phase 5: BOM Aggregation (80%)</td><td>1→2</td><td><span class="status-tag tag-progress">🟡 In progress</span></td><td>Implementation plan + code</td><td>Successor</td></tr>
+                    <tr><td>9</td><td>Phase 8: Tolerance Resolution (90%)</td><td>1→2</td><td><span class="status-tag tag-progress">🟡 In progress</span></td><td>Analysis doc + SQL</td><td>Successor</td></tr>
+                    <tr><td>10</td><td>Assign Sourcing Analysis (HTML report)</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>HTML report files</td><td>Nam Ho</td></tr>
+                    <tr><td>11</td><td>OpenClaw Evaluation (HTML report)</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>HTML report files</td><td>Kent</td></tr>
+                    <tr><td>12</td><td>TanLien Salary Intelligence</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>HTML report</td><td>Kent / HR</td></tr>
+                    <tr><td>13</td><td>QR Code / Barcode Research</td><td>2</td><td><span class="status-tag tag-done">✅ Done</span></td><td>Analysis doc</td><td>Kent</td></tr>
+                    <tr><td>14</td><td>SOP AI Pipeline documentation</td><td>2</td><td><span class="status-tag tag-done">✅ Done</span></td><td>Process doc</td><td>Nam Ho</td></tr>
+                    <tr><td>15</td><td>Enterprise DT Roadmap (PPTX)</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>19-slide PPTX</td><td>Kent / Nam Ho</td></tr>
+                    <tr><td>16</td><td>Account / Access transfers</td><td>1</td><td><span class="status-tag tag-pending">⏳ Pending</span></td><td>Credentials inventory</td><td>Hưng</td></tr>
+                    <tr><td>17</td><td>Active user transition (Ngàn, Phương, Nam)</td><td>2</td><td><span class="status-tag tag-pending">⏳ Pending</span></td><td>Usage guides</td><td>Hưng / Successor</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- GĐ 1 Deliverables -->
+        <div class="grid-2">
+            <div>
+                <h4 class="mb-4" style="color:var(--gold-bright);"><i class="fa-solid fa-building" style="margin-right:0.4rem;"></i>GĐ 1 — Tại VP (27/3 – 3/4)</h4>
+                <ul class="checklist">
+                    <li>Hoàn thiện tài liệu kỹ thuật 4 module BigQuery</li>
+                    <li>Thêm code comments + README cho từng repo</li>
+                    <li>Tạo hướng dẫn vận hành step-by-step</li>
+                    <li>Tổng hợp báo cáo trạng thái hệ thống</li>
+                    <li>Bàn giao trực tiếp cho Hưng (IT Admin)</li>
+                    <li>Chuyển quyền BigQuery + Google Sheets</li>
+                    <li>Tài liệu config Weekly Report (28-cell input)</li>
+                    <li>Đóng gói HTML reports cho lưu trữ</li>
+                    <li>Báo cáo tiến độ cho Nam Ho</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="mb-4" style="color:var(--blue-accent);"><i class="fa-solid fa-wifi" style="margin-right:0.4rem;"></i>GĐ 2 — Từ xa (4/4 – 25/4)</h4>
+                <ul class="checklist">
+                    <li>Hỗ trợ kỹ thuật mỗi tối 19:00 – 20:30</li>
+                    <li>Phản hồi Zalo/WeChat ban ngày nếu cần gấp</li>
+                    <li>Onboard người tiếp nhận (nếu ISC phân công)</li>
+                    <li>Hỗ trợ users (Ngàn, Phương, Nam) chuyển tiếp</li>
+                    <li>Hoàn thành Phase 5/8 từ xa (nếu khả thi)</li>
+                    <li>Xử lý sự cố phát sinh trong chuyển giao</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4: RISK ASSESSMENT
+     ============================================================ -->
+<section id="risk">
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-shield-halved"></i> 4. Trạng thái & Rủi ro / System Status & Risk</h2>
+            <div class="divider"></div>
+        </div>
+
+        <!-- Risk Matrix -->
+        <h3 class="mb-4">Ma trận Rủi ro / Risk Matrix</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>System</th><th>Status</th><th>Risk</th><th>Level</th><th>If Ignored</th><th>Mitigation</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>BigQuery Warehouse</td><td>🟢 Running</td><td>Schema complexity</td><td><span class="risk-badge risk-medium">Medium</span></td><td>Data flows, new requirements need SQL expertise</td><td>ERD + logic docs</td></tr>
+                    <tr><td>M2 Nightly MRP</td><td>🟢 Auto 4AM</td><td>None if unchanged</td><td><span class="risk-badge risk-low">Low</span></td><td>Runs every night automatically</td><td>Monitor BQ console</td></tr>
+                    <tr><td>M4 Stock Sync</td><td>🟢 Auto 5-min</td><td>None</td><td><span class="risk-badge risk-low">Low</span></td><td>Continues syncing</td><td>Monitor only</td></tr>
+                    <tr><td>ETL Pipelines</td><td>🟢 Scheduled</td><td>Upstream changes</td><td><span class="risk-badge risk-medium">Medium</span></td><td>Works until Sheets columns change</td><td>Header detection</td></tr>
+                    <tr><td>AppScript SC Alerts</td><td>🟢 Running</td><td>None</td><td><span class="risk-badge risk-low">Low</span></td><td>Emails continue automatically</td><td>No maintenance</td></tr>
+                    <tr><td>Weekly Report</td><td>🟡 Needs input</td><td>Content author gone</td><td><span class="risk-badge risk-medium">Medium</span></td><td>Report meaningless without input</td><td>Train successor</td></tr>
+                    <tr><td>Looker Studio</td><td>🟢 Running</td><td>None</td><td><span class="risk-badge risk-low">Low</span></td><td>Auto-refresh from BigQuery</td><td>No action</td></tr>
+                    <tr><td>Phase 5 BOM Agg</td><td>🟡 80%</td><td>Unfinished</td><td><span class="risk-badge risk-high">High</span></td><td>50% VPO waste continues</td><td>Remote / successor</td></tr>
+                    <tr><td>Phase 8 Tolerance</td><td>🟡 90%</td><td>Unfinished</td><td><span class="risk-badge risk-medium">Medium</span></td><td>CS tolerance only, no ISC buffer</td><td>Near-complete</td></tr>
+                    <tr><td>Dept Expansion</td><td>🔴 Discovery</td><td>No developer</td><td><span class="risk-badge risk-high">High</span></td><td>6 depts stay manual</td><td>Hire new DE</td></tr>
+                    <tr><td>Weekly Report Content</td><td>🔴 Manual</td><td>No author</td><td><span class="risk-badge risk-high">High</span></td><td>Kent loses visibility</td><td>Train on 5W-2H</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Known Issues -->
+        <h3 class="mb-4">Vấn đề đã biết / Known Issues</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead><tr><th>Issue</th><th>Severity</th><th>State</th><th>Action Required</th></tr></thead>
+                <tbody>
+                    <tr><td>MISMATCH threshold tuning</td><td><span class="risk-badge risk-low">Low</span></td><td>79% (expected, not bug)</td><td>Monitor, adjust if needed</td></tr>
+                    <tr><td>Emoji rendering in Weekly Report</td><td><span class="risk-badge risk-low">Low</span></td><td>Fixed in V7</td><td>No action</td></tr>
+                    <tr><td>Planner dual-tolerance docs</td><td><span class="risk-badge risk-medium">Medium</span></td><td>In progress</td><td>Complete for Ngàn/Phương</td></tr>
+                    <tr><td>PR_Draft 16-col schema</td><td><span class="text-muted">Info</span></td><td>Documented</td><td>Ref: Config_Schema.txt</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Dependency Map -->
+        <h3 class="mb-4"><i class="fa-solid fa-link" style="color:var(--gold); margin-right:0.4rem;"></i>Dependency Map</h3>
+        <div class="dep-card">
+            <div class="dep-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div>
+                <div class="dep-trigger">BigQuery project disabled</div>
+                <div class="dep-effect">→ ALL dashboards, reports, alerts, and MRP stop working</div>
+            </div>
+        </div>
+        <div class="dep-card">
+            <div class="dep-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div>
+                <div class="dep-trigger">Google Sheets source deleted</div>
+                <div class="dep-effect">→ ETL pipelines fail (but BigQuery data persists)</div>
+            </div>
+        </div>
+        <div class="dep-card">
+            <div class="dep-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div>
+                <div class="dep-trigger">AppScript trigger disabled</div>
+                <div class="dep-effect">→ Weekly report + SC shortage alerts stop</div>
+            </div>
+        </div>
+        <div class="dep-card">
+            <div class="dep-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div>
+                <div class="dep-trigger">dk@isconline.vn deactivated</div>
+                <div class="dep-effect">→ Weekly report review gate breaks — change SEND_TO in Code.gs config</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5: ACTIVE USERS & STAKEHOLDERS
+     ============================================================ -->
+<section id="users">
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-users"></i> 5. Người dùng & Bên liên quan / Active Users & Stakeholders</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>Người dùng</th><th>Phòng ban</th><th>Systems Used</th><th>Status</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Ngàn</strong></td><td>SC (Planning)</td><td>BigQuery (pilot), Lead Plan</td><td><span class="status-tag tag-running">Active</span></td><td>Primary pilot — 52 materials in production</td></tr>
+                    <tr><td><strong>Phương</strong></td><td>SC</td><td>Dashboards, SC alerts</td><td><span class="status-tag tag-running">Active</span></td><td>Operational user</td></tr>
+                    <tr><td><strong>Nam</strong></td><td>SC</td><td>Dashboards, SC alerts</td><td><span class="status-tag tag-running">Active</span></td><td>Operational user</td></tr>
+                    <tr><td><strong>Dương</strong></td><td>MPL</td><td>None yet</td><td><span class="status-tag tag-pending">Planned</span></td><td>Contact for MPL expansion</td></tr>
+                    <tr><td><strong>Cường</strong></td><td>MPL</td><td>None yet</td><td><span class="status-tag tag-pending">Planned</span></td><td>Contact for MPL expansion</td></tr>
+                    <tr><td><strong>Nam Ho</strong></td><td>SC Manager / DT Head</td><td>Reports, dashboards, oversight</td><td><span class="status-tag tag-running">Active</span></td><td>Needs Weekly Report input training</td></tr>
+                    <tr><td><strong>Kent Huỳnh</strong></td><td>Executive (US)</td><td>Weekly 5W-2H, strategic reports</td><td><span class="status-tag tag-running">Recipient</span></td><td>Receives Friday reports</td></tr>
+                    <tr><td><strong>Hưng</strong></td><td>IT Admin</td><td>All systems (pending)</td><td><span class="status-tag tag-pending">Pending</span></td><td>Designated technical handover</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Successor Profile -->
+        <h3 class="mb-4"><i class="fa-solid fa-user-plus" style="color:var(--gold); margin-right:0.4rem;"></i>Yêu cầu Người tiếp nhận / Successor Profile</h3>
+        <div class="grid-2">
+            <div class="card">
+                <h4 class="mb-4" style="color:var(--red);">Must Have</h4>
+                <ul class="checklist">
+                    <li>Python</li>
+                    <li>SQL (BigQuery dialect)</li>
+                    <li>Google BigQuery administration</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4 class="mb-4" style="color:var(--yellow);">Nice to Have</h4>
+                <ul class="checklist">
+                    <li>Google AppScript</li>
+                    <li>Looker Studio</li>
+                    <li>Data warehouse architecture</li>
+                    <li>Supply chain domain (BOM, MRP)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION 6: REMOTE SUPPORT
+     ============================================================ -->
+<section id="support">
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-headset"></i> 6. Cam kết Hỗ trợ Từ xa / Remote Support Commitment</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>Phase</th><th>Thời gian</th><th>Tần suất</th><th>Kênh</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>GĐ 2 (4/4 – 25/4)</td><td>19:00 – 20:30 mỗi tối</td><td>Hàng ngày / Daily</td><td>Zalo, WeChat, Email</td></tr>
+                    <tr><td>GĐ 2 (urgent)</td><td>Giờ hành chính</td><td>Theo yêu cầu</td><td>Zalo, WeChat</td></tr>
+                    <tr><td>GĐ 3 (25/4+)</td><td>Theo yêu cầu</td><td>Ad-hoc</td><td>Zalo, WeChat</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Scope -->
+        <h3 class="mb-4">Phạm vi Hỗ trợ / Support Scope</h3>
+        <div class="grid-2 mb-8">
+            <div class="card" style="border-left: 3px solid var(--green);">
+                <p><i class="fa-solid fa-check" style="color:var(--green); margin-right:0.4rem;"></i> Giải đáp kỹ thuật / Technical Q&A</p>
+                <p><i class="fa-solid fa-check" style="color:var(--green); margin-right:0.4rem;"></i> Hướng dẫn vận hành / Operation guidance</p>
+                <p><i class="fa-solid fa-check" style="color:var(--green); margin-right:0.4rem;"></i> System troubleshooting</p>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--green);">
+                <p><i class="fa-solid fa-check" style="color:var(--green); margin-right:0.4rem;"></i> Onboard người tiếp nhận / Successor onboarding</p>
+                <p><i class="fa-solid fa-check" style="color:var(--green); margin-right:0.4rem;"></i> Remote Phase 5/8 completion</p>
+            </div>
+        </div>
+
+        <!-- Escalation Path -->
+        <h3 class="mb-4">Quy trình Escalation / Escalation Path</h3>
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem;">
+            <span class="badge badge-glass"><i class="fa-solid fa-wrench"></i> Hưng (IT Admin)</span>
+            <i class="fa-solid fa-arrow-right text-muted"></i>
+            <span class="badge badge-glass"><i class="fa-solid fa-eye"></i> Nam Ho (Supervisor)</span>
+            <i class="fa-solid fa-arrow-right text-muted"></i>
+            <span class="badge badge-gold"><i class="fa-solid fa-headset"></i> Khánh (Remote)</span>
+            <i class="fa-solid fa-arrow-right text-muted"></i>
+            <span class="badge badge-glass"><i class="fa-solid fa-crown"></i> Kent (Strategic)</span>
+        </div>
+
+        <!-- Sign-off -->
+        <div class="sign-off">
+            <p><strong>Người lập báo cáo:</strong> Nguyễn Duy Khánh — Senior Data Engineer, Ban Số Hóa</p>
+            <p><strong>Giám sát bàn giao:</strong> Hồ Nam — SC Manager / Trưởng Ban Số Hóa</p>
+            <p><strong>Tiếp nhận kỹ thuật:</strong> Hưng — IT Admin</p>
+            <p><strong>Lãnh đạo phê duyệt:</strong> Kent Huỳnh</p>
+            <p class="mt-4"><strong>Ngày:</strong> 26/03/2026</p>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- ===== SCROLL PROGRESS BAR ===== -->
+<div class="scroll-progress"><div class="scroll-progress-fill" id="scrollProgress"></div></div>
+
+<!-- ===== BACK TO TOP ===== -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// Scroll Spy — highlights active sidebar link
+const navLinks = document.querySelectorAll('.sidebar nav a');
+const sections = document.querySelectorAll('section[id]');
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.sidebar nav a[href="#${entry.target.id}"]`);
+            if (activeLink) activeLink.classList.add('active');
+        }
+    });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(section => observer.observe(section));
+
+// Mobile hamburger toggle
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+
+hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('mobile-open');
+    hamburger.querySelector('i').classList.toggle('fa-bars');
+    hamburger.querySelector('i').classList.toggle('fa-xmark');
+});
+
+// Close sidebar on link click (mobile)
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            sidebar.classList.remove('mobile-open');
+            hamburger.querySelector('i').classList.add('fa-bars');
+            hamburger.querySelector('i').classList.remove('fa-xmark');
+        }
+    });
+});
+
+// Scroll progress bar + back to top
+const scrollProgressFill = document.getElementById('scrollProgress');
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+    const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    scrollProgressFill.style.transform = `scaleY(${Math.min(scrollPct, 1)})`;
+    backToTop.classList.toggle('visible', window.scrollY > 600);
+});
+backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Animated KPI counters
+function animateCounter(el, target, suffix) {
+    let current = 0;
+    const duration = 1200;
+    const step = target / (duration / 16);
+    const tick = () => {
+        current = Math.min(current + step, target);
+        el.textContent = (suffix === '+' || suffix === '+')
+            ? Math.floor(current) + suffix
+            : (target >= 1000 ? '$' + Math.floor(current).toLocaleString() : Math.floor(current) + (suffix || ''));
+        if (current < target) requestAnimationFrame(tick);
+    };
+    tick();
+}
+
+const kpiObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = 'true';
+            const kpiCards = entry.target.querySelectorAll('.kpi-value');
+            const targets = [
+                { val: 60, suffix: '+' },
+                { val: 58, suffix: '' },
+                { val: 42, suffix: '' },
+                { val: 1118, suffix: '$' },
+                { val: 14, suffix: '+' }
+            ];
+            kpiCards.forEach((card, i) => {
+                if (targets[i]) {
+                    const t = targets[i];
+                    if (t.suffix === '$') {
+                        let cur = 0;
+                        const step = t.val / 75;
+                        const tick = () => {
+                            cur = Math.min(cur + step, t.val);
+                            card.textContent = '$' + Math.floor(cur).toLocaleString();
+                            if (cur < t.val) requestAnimationFrame(tick);
+                        };
+                        tick();
+                    } else {
+                        animateCounter(card, t.val, t.suffix);
+                    }
+                }
+            });
+        }
+    });
+}, { threshold: 0.3 });
+
+const kpiGrid = document.querySelector('.kpi-grid');
+if (kpiGrid) kpiObserver.observe(kpiGrid);
+
+// Animated progress bars
+const progressObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.progress-fill').forEach(bar => {
+                bar.style.width = bar.dataset.width;
+            });
+            progressObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.progress-wrap').forEach(el => {
+    el.querySelectorAll('.progress-fill').forEach(bar => { bar.style.width = '0%'; });
+    progressObserver.observe(el.closest('.project-card') || el.parentElement);
+});
+</script>
+
+</body>
+</html>
