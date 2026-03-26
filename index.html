@@ -2141,6 +2141,9 @@ const tlObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.querySelectorAll('.ho-day').forEach((day, i) => {
+                day.style.animation = '';
+                day.style.opacity = '';
+                day.style.transform = '';
                 day.style.animationDelay = (i * 0.08) + 's';
                 day.classList.add('ho-animate');
             });
