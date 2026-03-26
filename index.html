@@ -804,31 +804,17 @@ p { color: var(--text-body); line-height: 1.75; }
 .ho-phase-header.phase-remote .ho-phase-dates { color: var(--blue-accent); background: rgba(87,203,255,0.1); }
 .ho-phase-header.phase-adhoc .ho-phase-dates { color: var(--green); background: rgba(100,255,218,0.08); }
 
-/* Day items */
+/* Day items — hidden by default, animated when visible */
 .ho-day {
   position: relative;
   padding: 0.6rem 0 0.6rem 1.5rem;
   opacity: 0;
-  transform: translateX(-15px);
-  animation: hoSlideIn 0.5s ease forwards;
+  transform: translateX(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.ho-day:nth-child(2) { animation-delay: 0.05s; }
-.ho-day:nth-child(3) { animation-delay: 0.10s; }
-.ho-day:nth-child(4) { animation-delay: 0.15s; }
-.ho-day:nth-child(5) { animation-delay: 0.20s; }
-.ho-day:nth-child(6) { animation-delay: 0.25s; }
-.ho-day:nth-child(7) { animation-delay: 0.30s; }
-.ho-day:nth-child(8) { animation-delay: 0.35s; }
-.ho-day:nth-child(9) { animation-delay: 0.40s; }
-.ho-day:nth-child(10) { animation-delay: 0.45s; }
-.ho-day:nth-child(11) { animation-delay: 0.50s; }
-.ho-day:nth-child(12) { animation-delay: 0.55s; }
-
-@keyframes hoSlideIn {
-  to { opacity: 1; transform: translateX(0); }
-}
-.ho-day.ho-animate {
-  animation: hoSlideIn 0.5s ease forwards;
+.ho-day.ho-visible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* Dot on the timeline */
@@ -2136,30 +2122,20 @@ const kpiObserver = new IntersectionObserver((entries) => {
 const kpiGrid = document.querySelector('.kpi-grid');
 if (kpiGrid) kpiObserver.observe(kpiGrid);
 
-// Animated handover timeline — trigger on scroll
+// Animated handover timeline — staggered reveal on scroll
 const tlObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.ho-day').forEach((day, i) => {
-                day.style.animation = '';
-                day.style.opacity = '';
-                day.style.transform = '';
-                day.style.animationDelay = (i * 0.08) + 's';
-                day.classList.add('ho-animate');
+            const days = entry.target.querySelectorAll('.ho-day');
+            days.forEach((day, i) => {
+                setTimeout(() => day.classList.add('ho-visible'), i * 100);
             });
             tlObserver.unobserve(entry.target);
         }
     });
-}, { threshold: 0.1 });
+}, { threshold: 0.05 });
 
-document.querySelectorAll('.ho-timeline').forEach(tl => {
-    tl.querySelectorAll('.ho-day').forEach(day => {
-        day.style.animation = 'none';
-        day.style.opacity = '0';
-        day.style.transform = 'translateX(-15px)';
-    });
-    tlObserver.observe(tl);
-});
+document.querySelectorAll('.ho-phase').forEach(phase => tlObserver.observe(phase));
 
 // Animated progress bars
 const progressObserver = new IntersectionObserver((entries) => {
