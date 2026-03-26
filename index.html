@@ -735,6 +735,187 @@ p { color: var(--text-body); line-height: 1.75; }
 .dep-trigger { font-weight: 600; color: var(--text-heading); font-size: 0.84rem; }
 .dep-effect { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
 
+/* ===== HANDOVER TIMELINE ===== */
+.ho-timeline {
+  position: relative;
+  padding-left: 140px;
+  margin: 2rem 0;
+}
+.ho-timeline::before {
+  content: '';
+  position: absolute;
+  left: 130px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold), var(--gold-muted), var(--border));
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(232,160,32,0.3);
+}
+
+/* Phase header */
+.ho-phase {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+.ho-phase-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: -140px;
+  padding: 0.85rem 1.25rem;
+  background: linear-gradient(135deg, rgba(232,160,32,0.12), rgba(232,160,32,0.04));
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 2;
+}
+.ho-phase-header.phase-remote {
+  background: linear-gradient(135deg, rgba(87,203,255,0.10), rgba(87,203,255,0.03));
+  border-color: rgba(87,203,255,0.3);
+}
+.ho-phase-header.phase-adhoc {
+  background: linear-gradient(135deg, rgba(100,255,218,0.08), rgba(100,255,218,0.02));
+  border-color: rgba(100,255,218,0.25);
+}
+.ho-phase-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.ho-phase-icon.icon-office { background: var(--gold-glow); color: var(--gold); box-shadow: 0 0 12px rgba(232,160,32,0.3); }
+.ho-phase-icon.icon-remote { background: rgba(87,203,255,0.15); color: var(--blue-accent); box-shadow: 0 0 12px rgba(87,203,255,0.3); }
+.ho-phase-icon.icon-adhoc { background: var(--green-bg); color: var(--green); box-shadow: 0 0 12px rgba(100,255,218,0.3); }
+.ho-phase-title { font-weight: 700; color: var(--text-heading); font-size: 0.95rem; }
+.ho-phase-dates {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gold-bright);
+  margin-left: auto;
+  background: rgba(232,160,32,0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+}
+.ho-phase-header.phase-remote .ho-phase-dates { color: var(--blue-accent); background: rgba(87,203,255,0.1); }
+.ho-phase-header.phase-adhoc .ho-phase-dates { color: var(--green); background: rgba(100,255,218,0.08); }
+
+/* Day items */
+.ho-day {
+  position: relative;
+  padding: 0.6rem 0 0.6rem 1.5rem;
+  opacity: 0;
+  transform: translateX(-15px);
+  animation: hoSlideIn 0.5s ease forwards;
+}
+.ho-day:nth-child(2) { animation-delay: 0.05s; }
+.ho-day:nth-child(3) { animation-delay: 0.10s; }
+.ho-day:nth-child(4) { animation-delay: 0.15s; }
+.ho-day:nth-child(5) { animation-delay: 0.20s; }
+.ho-day:nth-child(6) { animation-delay: 0.25s; }
+.ho-day:nth-child(7) { animation-delay: 0.30s; }
+.ho-day:nth-child(8) { animation-delay: 0.35s; }
+.ho-day:nth-child(9) { animation-delay: 0.40s; }
+.ho-day:nth-child(10) { animation-delay: 0.45s; }
+.ho-day:nth-child(11) { animation-delay: 0.50s; }
+.ho-day:nth-child(12) { animation-delay: 0.55s; }
+
+@keyframes hoSlideIn {
+  to { opacity: 1; transform: translateX(0); }
+}
+.ho-day.ho-animate {
+  animation: hoSlideIn 0.5s ease forwards;
+}
+
+/* Dot on the timeline */
+.ho-day::before {
+  content: '';
+  position: absolute;
+  left: -17px;
+  top: 0.85rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--bg-main);
+  box-shadow: 0 0 8px rgba(232,160,32,0.5);
+  z-index: 3;
+}
+.ho-phase-header.phase-remote ~ .ho-day::before { background: var(--blue-accent); box-shadow: 0 0 8px rgba(87,203,255,0.5); }
+.ho-phase-header.phase-adhoc ~ .ho-day::before { background: var(--green); box-shadow: 0 0 8px rgba(100,255,218,0.5); }
+
+.ho-day-date {
+  position: absolute;
+  left: -130px;
+  top: 0.55rem;
+  width: 105px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gold);
+  padding-right: 0.75rem;
+}
+.phase-remote ~ .ho-day .ho-day-date { color: var(--blue-accent); }
+.phase-adhoc ~ .ho-day .ho-day-date { color: var(--green); }
+
+.ho-day-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem;
+  font-size: 0.82rem;
+  color: var(--text-body);
+  transition: var(--transition);
+}
+.ho-day-content:hover {
+  border-color: var(--gold-border);
+  box-shadow: 0 0 15px rgba(232,160,32,0.1);
+  transform: translateX(3px);
+}
+.ho-day-content strong { color: var(--text-heading); }
+.ho-day-content .ho-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  margin-left: 0.4rem;
+}
+.ho-tag-doc { background: rgba(232,160,32,0.12); color: var(--gold-bright); }
+.ho-tag-transfer { background: rgba(87,203,255,0.12); color: var(--blue-accent); }
+.ho-tag-review { background: rgba(100,255,218,0.1); color: var(--green); }
+.ho-tag-support { background: rgba(255,172,69,0.12); color: var(--orange); }
+
+/* Today marker */
+.ho-day.today::before {
+  width: 14px;
+  height: 14px;
+  left: -19px;
+  top: 0.75rem;
+  background: var(--gold-bright);
+  box-shadow: 0 0 15px rgba(245,200,66,0.7), 0 0 5px rgba(245,200,66,0.9);
+  animation: hoPulse 2s ease-in-out infinite;
+}
+@keyframes hoPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(245,200,66,0.5); }
+  50% { box-shadow: 0 0 20px rgba(245,200,66,0.8), 0 0 6px rgba(245,200,66,1); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .ho-timeline { padding-left: 30px; }
+  .ho-timeline::before { left: 20px; }
+  .ho-phase-header { margin-left: -30px; flex-wrap: wrap; }
+  .ho-day-date { position: static; width: auto; text-align: left; margin-bottom: 0.2rem; padding: 0; }
+  .ho-day { padding-left: 1rem; }
+  .ho-day::before { left: -16px; }
+}
+
 /* ===== SCROLL PROGRESS BAR ===== */
 .scroll-progress {
   position: fixed;
@@ -1507,17 +1688,88 @@ p { color: var(--text-body); line-height: 1.75; }
             <div class="divider"></div>
         </div>
 
-        <!-- Gantt Bar -->
-        <h3 class="mb-4">Lộ trình / Phase Timeline</h3>
-        <div class="gantt-wrap mb-8">
-            <div class="gantt-row">
-                <div class="gantt-label">Timeline</div>
-                <div class="gantt-track">
-                    <div class="gantt-fill gd1">GĐ 1: 27/3–3/4</div>
-                    <div class="gantt-fill gd2">GĐ 2: 4/4–25/4</div>
-                    <div class="gantt-fill gd3">GĐ 3</div>
+        <!-- Animated Handover Timeline -->
+        <h3 class="mb-4">Lộ trình Chi tiết / Detailed Timeline</h3>
+        <div class="ho-timeline">
+
+            <!-- GĐ 1: At Office -->
+            <div class="ho-phase">
+                <div class="ho-phase-header">
+                    <div class="ho-phase-icon icon-office"><i class="fa-solid fa-building"></i></div>
+                    <div class="ho-phase-title">Giai đoạn 1 — Tại Văn phòng / At Office</div>
+                    <div class="ho-phase-dates">27/3 – 3/4</div>
+                </div>
+
+                <div class="ho-day today">
+                    <div class="ho-day-date">T4 · 27/03</div>
+                    <div class="ho-day-content"><strong>Ngày bắt đầu bàn giao</strong> — Tổng hợp danh mục hệ thống, bắt đầu viết tài liệu kiến trúc BigQuery <span class="ho-tag ho-tag-doc">Documentation</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">T5 · 28/03</div>
+                    <div class="ho-day-content"><strong>Tài liệu Module M1 + M2</strong> — ERD, logic nghiệp vụ, code comments cho "The Demand Engine" & "The Brain" <span class="ho-tag ho-tag-doc">Documentation</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">T6 · 29/03</div>
+                    <div class="ho-day-content"><strong>Tài liệu Module M3 + M4</strong> — "The Automated Buyer" & "The Truth Engine", README cho từng repo <span class="ho-tag ho-tag-doc">Documentation</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">T2 · 31/03</div>
+                    <div class="ho-day-content"><strong>Hướng dẫn vận hành</strong> — Step-by-step guides cho AppScript automation, ETL pipelines, Weekly Report system <span class="ho-tag ho-tag-doc">Documentation</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">T3 · 01/04</div>
+                    <div class="ho-day-content"><strong>Chuyển quyền hệ thống</strong> — BigQuery project ownership, Google Sheets, AppScript deployments → Hùng <span class="ho-tag ho-tag-transfer">Transfer</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">T4 · 02/04</div>
+                    <div class="ho-day-content"><strong>Bàn giao trực tiếp cho Hùng</strong> — Walkthrough session: demo hệ thống, Q&A, đóng gói HTML reports <span class="ho-tag ho-tag-transfer">Transfer</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">T5 · 03/04</div>
+                    <div class="ho-day-content"><strong>Ngày làm việc cuối tại VP</strong> — Báo cáo tiến độ cho Nam Ho, kiểm tra trạng thái tất cả hệ thống, hoàn thiện tài liệu còn thiếu <span class="ho-tag ho-tag-review">Final Review</span></div>
                 </div>
             </div>
+
+            <!-- GĐ 2: Remote -->
+            <div class="ho-phase">
+                <div class="ho-phase-header phase-remote">
+                    <div class="ho-phase-icon icon-remote"><i class="fa-solid fa-wifi"></i></div>
+                    <div class="ho-phase-title">Giai đoạn 2 — Hỗ trợ Từ xa / Remote Support</div>
+                    <div class="ho-phase-dates">4/4 – 25/4</div>
+                </div>
+
+                <div class="ho-day">
+                    <div class="ho-day-date">T6 · 04/04</div>
+                    <div class="ho-day-content"><strong>Bắt đầu hỗ trợ từ xa</strong> — Mỗi tối 19:00–20:30, phản hồi Zalo/WeChat ban ngày nếu cần gấp <span class="ho-tag ho-tag-support">Support</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">07–11/04</div>
+                    <div class="ho-day-content"><strong>Tuần 1 từ xa</strong> — Giải đáp kỹ thuật, hỗ trợ users (Ngàn, Phương, Nam) chuyển tiếp, onboard người tiếp nhận nếu có <span class="ho-tag ho-tag-support">Support</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">14–18/04</div>
+                    <div class="ho-day-content"><strong>Tuần 2 từ xa</strong> — Hoàn thành Phase 5 BOM Aggregation (80% → 100%) + Phase 8 Tolerance từ xa nếu khả thi <span class="ho-tag ho-tag-doc">Development</span></div>
+                </div>
+                <div class="ho-day">
+                    <div class="ho-day-date">21–25/04</div>
+                    <div class="ho-day-content"><strong>Tuần 3 từ xa — Kết thúc GĐ 2</strong> — Xử lý sự cố cuối, xác nhận bàn giao hoàn tất với Nam Ho <span class="ho-tag ho-tag-review">Final Review</span></div>
+                </div>
+            </div>
+
+            <!-- GĐ 3: Ad-hoc -->
+            <div class="ho-phase">
+                <div class="ho-phase-header phase-adhoc">
+                    <div class="ho-phase-icon icon-adhoc"><i class="fa-solid fa-comments"></i></div>
+                    <div class="ho-phase-title">Giai đoạn 3 — Ad-hoc</div>
+                    <div class="ho-phase-dates">25/4+</div>
+                </div>
+
+                <div class="ho-day">
+                    <div class="ho-day-date">25/04 →</div>
+                    <div class="ho-day-content"><strong>Hỗ trợ theo yêu cầu</strong> — Sẵn sàng trả lời qua Zalo/WeChat nếu có câu hỏi phát sinh <span class="ho-tag ho-tag-support">Ad-hoc</span></div>
+                </div>
+            </div>
+
         </div>
 
         <!-- 17-Item Checklist Table -->
@@ -1883,6 +2135,28 @@ const kpiObserver = new IntersectionObserver((entries) => {
 
 const kpiGrid = document.querySelector('.kpi-grid');
 if (kpiGrid) kpiObserver.observe(kpiGrid);
+
+// Animated handover timeline — trigger on scroll
+const tlObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.ho-day').forEach((day, i) => {
+                day.style.animationDelay = (i * 0.08) + 's';
+                day.classList.add('ho-animate');
+            });
+            tlObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.ho-timeline').forEach(tl => {
+    tl.querySelectorAll('.ho-day').forEach(day => {
+        day.style.animation = 'none';
+        day.style.opacity = '0';
+        day.style.transform = 'translateX(-15px)';
+    });
+    tlObserver.observe(tl);
+});
 
 // Animated progress bars
 const progressObserver = new IntersectionObserver((entries) => {
