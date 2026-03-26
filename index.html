@@ -902,39 +902,170 @@ p { color: var(--text-body); line-height: 1.75; }
   .ho-day::before { left: -16px; }
 }
 
-/* ===== SCROLL PROGRESS BAR ===== */
-.scroll-progress {
+/* ===== TIMELINE PROGRESS BAR (Right Side) ===== */
+.tl-progress {
   position: fixed;
-  top: 1.5rem;
+  top: 50%;
   right: 1.25rem;
-  bottom: 1.5rem;
-  width: 4px;
+  transform: translateY(-50%);
   z-index: 150;
-  background: rgba(100,140,220,0.08);
-  border-radius: var(--radius-full);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  pointer-events: auto;
 }
-.scroll-progress-fill {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, var(--gold-bright), var(--gold), var(--gold-muted));
-  transform-origin: top;
-  transform: scaleY(0);
+
+/* The vertical track */
+.tl-track {
+  position: relative;
+  width: 4px;
+  height: 320px;
+  background: rgba(100,140,220,0.1);
   border-radius: var(--radius-full);
-  box-shadow: 0 0 10px rgba(232,160,32,0.5), -3px 0 15px rgba(232,160,32,0.15);
 }
-/* Glow dot at fill tip */
-.scroll-progress-fill::after {
-  content: '';
+
+/* Gold fill that follows scroll */
+.tl-fill {
   position: absolute;
-  bottom: 0;
+  top: 0; left: 0;
+  width: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  box-shadow: 0 0 10px rgba(232,160,32,0.4), -2px 0 12px rgba(232,160,32,0.15);
+  height: 0%;
+  transition: height 0.15s ease-out;
+}
+
+/* Moving glow dot */
+.tl-cursor {
+  position: absolute;
   left: 50%;
-  transform: translateX(-50%);
-  width: 8px;
-  height: 8px;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--gold-bright);
-  box-shadow: 0 0 12px rgba(245,200,66,0.6), 0 0 4px rgba(245,200,66,0.8);
+  box-shadow: 0 0 14px rgba(245,200,66,0.7), 0 0 5px rgba(245,200,66,0.9);
+  top: 0%;
+  transition: top 0.15s ease-out;
+  z-index: 5;
+}
+.tl-cursor::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(245,200,66,0.3);
+  animation: tlPulse 2s ease-in-out infinite;
+}
+@keyframes tlPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Phase milestone markers */
+.tl-milestone {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  z-index: 4;
+  transition: var(--transition);
+}
+.tl-milestone.reached {
+  border-color: var(--gold);
+  background: var(--gold);
+  box-shadow: 0 0 10px rgba(232,160,32,0.5);
+}
+.tl-milestone.ms-start { top: 0%; }
+.tl-milestone.ms-gd1 { top: 25%; border-color: var(--gold-border); }
+.tl-milestone.ms-gd2 { top: 65%; border-color: rgba(87,203,255,0.4); }
+.tl-milestone.ms-gd3 { top: 90%; border-color: rgba(100,255,218,0.3); }
+.tl-milestone.ms-end { top: 100%; }
+
+/* Phase labels — appear on the left of the track */
+.tl-label {
+  position: absolute;
+  right: 20px;
+  white-space: nowrap;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  opacity: 0.7;
+  transition: var(--transition);
+  pointer-events: none;
+}
+.tl-label:hover { opacity: 1; }
+.tl-label.reached { opacity: 1; }
+
+.tl-label.lb-start {
+  top: -2%;
+  color: var(--gold-bright);
+  background: rgba(232,160,32,0.1);
+  border: 1px solid rgba(232,160,32,0.2);
+}
+.tl-label.lb-gd1 {
+  top: 23%;
+  color: var(--gold-bright);
+  background: rgba(232,160,32,0.1);
+  border: 1px solid rgba(232,160,32,0.2);
+}
+.tl-label.lb-gd2 {
+  top: 63%;
+  color: var(--blue-accent);
+  background: rgba(87,203,255,0.08);
+  border: 1px solid rgba(87,203,255,0.2);
+}
+.tl-label.lb-gd3 {
+  top: 88%;
+  color: var(--green);
+  background: rgba(100,255,218,0.06);
+  border: 1px solid rgba(100,255,218,0.2);
+}
+
+/* Phase segment colors on the track */
+.tl-segment {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-radius: 0;
+  opacity: 0.15;
+}
+.tl-seg-gd1 { top: 0%; height: 25%; background: var(--gold); }
+.tl-seg-gd2 { top: 25%; height: 40%; background: var(--blue-accent); }
+.tl-seg-gd3 { top: 65%; height: 25%; background: var(--green); }
+
+/* Header above track */
+.tl-header {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  position: absolute;
+  top: 50%;
+  right: 0.25rem;
+  display: none;
+}
+
+/* Responsive: hide on mobile */
+@media (max-width: 900px) {
+  .tl-progress { display: none; }
+}
+@media print {
+  .tl-progress { display: none; }
 }
 
 /* ===== BACK TO TOP ===== */
@@ -2012,8 +2143,29 @@ p { color: var(--text-body); line-height: 1.75; }
 
 </main>
 
-<!-- ===== SCROLL PROGRESS BAR ===== -->
-<div class="scroll-progress"><div class="scroll-progress-fill" id="scrollProgress"></div></div>
+<!-- ===== TIMELINE PROGRESS BAR ===== -->
+<div class="tl-progress" id="tlProgress">
+    <div class="tl-track">
+        <!-- Phase segment backgrounds -->
+        <div class="tl-segment tl-seg-gd1"></div>
+        <div class="tl-segment tl-seg-gd2"></div>
+        <div class="tl-segment tl-seg-gd3"></div>
+        <!-- Gold fill -->
+        <div class="tl-fill" id="tlFill"></div>
+        <!-- Milestone dots -->
+        <div class="tl-milestone ms-start reached"></div>
+        <div class="tl-milestone ms-gd1" data-at="25"></div>
+        <div class="tl-milestone ms-gd2" data-at="65"></div>
+        <div class="tl-milestone ms-gd3" data-at="90"></div>
+        <!-- Moving cursor -->
+        <div class="tl-cursor" id="tlCursor"></div>
+        <!-- Phase labels -->
+        <div class="tl-label lb-start reached">27/3 Bắt đầu</div>
+        <div class="tl-label lb-gd1">3/4 GĐ 1</div>
+        <div class="tl-label lb-gd2">25/4 GĐ 2</div>
+        <div class="tl-label lb-gd3">Ad-hoc</div>
+    </div>
+</div>
 
 <!-- ===== BACK TO TOP ===== -->
 <button class="back-to-top" id="backToTop" aria-label="Back to top">
@@ -2059,12 +2211,41 @@ navLinks.forEach(link => {
     });
 });
 
-// Scroll progress bar + back to top
-const scrollProgressFill = document.getElementById('scrollProgress');
+// Timeline progress bar + back to top
+const tlFill = document.getElementById('tlFill');
+const tlCursor = document.getElementById('tlCursor');
+const tlMilestones = document.querySelectorAll('.tl-milestone[data-at]');
+const tlLabels = document.querySelectorAll('.tl-label');
 const backToTop = document.getElementById('backToTop');
+
 window.addEventListener('scroll', () => {
-    const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-    scrollProgressFill.style.transform = `scaleY(${Math.min(scrollPct, 1)})`;
+    const scrollPct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    const pct = Math.min(scrollPct, 100);
+
+    // Update fill height and cursor position
+    tlFill.style.height = pct + '%';
+    tlCursor.style.top = pct + '%';
+
+    // Light up milestones when scroll reaches them
+    tlMilestones.forEach(ms => {
+        const at = parseFloat(ms.dataset.at);
+        if (pct >= at) {
+            ms.classList.add('reached');
+        } else {
+            ms.classList.remove('reached');
+        }
+    });
+
+    // Light up labels when their milestone is reached
+    const thresholds = [0, 25, 65, 90];
+    tlLabels.forEach((lb, i) => {
+        if (pct >= thresholds[i]) {
+            lb.classList.add('reached');
+        } else {
+            lb.classList.remove('reached');
+        }
+    });
+
     backToTop.classList.toggle('visible', window.scrollY > 600);
 });
 backToTop.addEventListener('click', () => {
