@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFO Matching Engine &mdash; ISC Supply Chain</title>
+    <style>
+        :root {
+            --primary: #f8fafc;
+            --secondary: #818cf8;
+            --secondary-hover: #a5b4fc;
+            --accent: #38bdf8;
+            --bg-main: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-card: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+            --border: #334155;
+            --success: #34d399;
+            --success-bg: rgba(52, 211, 153, 0.12);
+            --warning: #fbbf24;
+            --warning-bg: rgba(251, 191, 36, 0.12);
+            --danger: #f87171;
+            --danger-bg: rgba(248, 113, 113, 0.12);
+            --info: #60a5fa;
+            --info-bg: rgba(96, 165, 250, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-main); color: var(--text-main);
+            line-height: 1.7; -webkit-font-smoothing: antialiased;
+        }
+
+        /* NAV */
+        .top-nav { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+        .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 1.5rem; height: 52px; overflow-x: auto; }
+        .nav-brand { font-weight: 700; color: var(--secondary); white-space: nowrap; font-size: 0.9rem; }
+        .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; white-space: nowrap; padding: 4px 0; border-bottom: 2px solid transparent; transition: var(--transition); }
+        .nav-link:hover, .nav-link.active { color: var(--secondary); border-bottom-color: var(--secondary); }
+        .nav-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+
+        /* LAYOUT */
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+        section { margin-bottom: 3.5rem; }
+        .section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--secondary); margin-bottom: 0.5rem; }
+        .section-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
+        .divider { height: 1px; background: linear-gradient(90deg, var(--secondary), transparent); margin-bottom: 2rem; }
+
+        /* CARDS */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1rem; }
+        .glass-card { background: rgba(30,41,59,0.6); backdrop-filter: blur(10px); }
+        .card-header { font-weight: 700; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+
+        /* STAT CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { border-radius: var(--radius-md); padding: 1.25rem; border: 1px solid var(--border); position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .stat-card .stat-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        .stat-card .stat-value { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+        .stat-card .stat-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem; }
+        .stat-demand { background: var(--warning-bg); } .stat-demand::before { background: var(--warning); } .stat-demand .stat-label, .stat-demand .stat-value { color: var(--warning); }
+        .stat-supply { background: var(--success-bg); } .stat-supply::before { background: var(--success); } .stat-supply .stat-label, .stat-supply .stat-value { color: var(--success); }
+        .stat-shortage { background: var(--danger-bg); } .stat-shortage::before { background: var(--danger); } .stat-shortage .stat-label, .stat-shortage .stat-value { color: var(--danger); }
+        .stat-lp { background: var(--info-bg); } .stat-lp::before { background: var(--info); } .stat-lp .stat-label, .stat-lp .stat-value { color: var(--info); }
+
+        /* TABLES */
+        .table-wrap { overflow-x: auto; margin-bottom: 1rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 0.75rem 1rem; background: rgba(30,41,59,0.8); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+        td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(51,65,85,0.4); }
+        tr:hover td { background: rgba(129,140,248,0.05); }
+        .row-excluded td { opacity: 0.35; text-decoration: line-through; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .badge-success { background: var(--success-bg); color: var(--success); border: 1px solid rgba(52,211,153,0.3); }
+        .badge-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(248,113,113,0.3); }
+        .badge-muted { background: rgba(100,116,139,0.15); color: var(--text-light); border: 1px solid rgba(100,116,139,0.3); }
+        .badge-info { background: var(--info-bg); color: var(--info); border: 1px solid rgba(96,165,250,0.3); }
+        .badge-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(251,191,36,0.3); }
+        .mono { font-family: 'SF Mono','Cascadia Code','Consolas', monospace; }
+
+        /* CALLOUT */
+        .callout { border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; border-left: 4px solid; }
+        .callout-warning { background: var(--warning-bg); border-color: var(--warning); }
+        .callout-danger { background: var(--danger-bg); border-color: var(--danger); }
+        .callout-success { background: var(--success-bg); border-color: var(--success); }
+        .callout-info { background: var(--info-bg); border-color: var(--info); }
+        .callout strong { display: block; margin-bottom: 0.25rem; }
+
+        /* EQUATION */
+        .equation { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin: 1.5rem 0; font-size: 1rem; }
+        .eq-block { padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); font-weight: 700; font-size: 1.1rem; text-align: center; border: 1px solid; line-height: 1.2; }
+        .eq-block small { display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; }
+        .eq-op { font-size: 1.5rem; font-weight: 300; color: var(--text-muted); }
+        .eq-supply { background: var(--success-bg); color: var(--success); border-color: rgba(52,211,153,0.3); }
+        .eq-demand { background: var(--warning-bg); color: var(--warning); border-color: rgba(251,191,36,0.3); }
+        .eq-result { background: var(--secondary); color: #fff; border-color: var(--secondary); font-size: 1.3rem; }
+        .eq-shortage { background: var(--danger-bg); color: var(--danger); border-color: rgba(248,113,113,0.3); }
+
+        /* SVG */
+        .svg-wrap { margin: 1.5rem 0; overflow-x: auto; position: relative; z-index: 1; }
+        .svg-wrap svg { display: block; margin: 0 auto; max-width: 100%; height: auto; overflow: visible; }
+
+        /* HERO */
+        .hero { padding: 4rem 0 2rem; text-align: center; }
+        .hero-badge { display: inline-block; padding: 4px 16px; border-radius: 999px; background: rgba(129,140,248,0.15); border: 1px solid rgba(129,140,248,0.3); font-size: 0.75rem; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem; background: linear-gradient(135deg, #f8fafc 0%, #818cf8 50%, #38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 650px; margin: 0 auto; }
+
+        /* FUNDAMENTAL CARDS */
+        .fund-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.75rem; margin-bottom: 1.5rem; position: relative; overflow: visible; }
+        .fund-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--secondary); border-radius: var(--radius-md) var(--radius-md) 0 0; }
+        .fund-num { position: absolute; top: 12px; right: 16px; font-size: 2.5rem; font-weight: 900; color: rgba(129,140,248,0.1); line-height: 1; pointer-events: none; z-index: 0; }
+        .fund-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary); position: relative; z-index: 1; }
+        .fund-card .fund-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; position: relative; z-index: 1; }
+        .fund-formula { background: rgba(15,23,42,0.8); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; font-family: 'SF Mono','Cascadia Code',monospace; font-size: 0.85rem; margin: 0.75rem 0; overflow-x: auto; position: relative; z-index: 1; }
+
+        /* COMPARE GRID */
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .compare-card { border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border); }
+        .compare-card h4 { margin-bottom: 1rem; font-size: 1rem; }
+
+        /* COLLAPSIBLE */
+        .collapsible-header { cursor: pointer; display: flex; align-items: center; gap: 0.75rem; padding: 1rem 0; user-select: none; }
+        .collapsible-header::before { content: '\25BC'; font-size: 0.7rem; color: var(--secondary); transition: transform 0.3s ease; flex-shrink: 0; }
+        .collapsible-header.collapsed::before { transform: rotate(-90deg); }
+        .collapsible-body { overflow: hidden; transition: max-height 0.4s ease; }
+        .collapsible-body.collapsed { max-height: 0 !important; }
+
+        /* STEP WALKTHROUGH */
+        .step-controls { display: flex; gap: 0.75rem; align-items: center; margin: 1.5rem 0; flex-wrap: wrap; }
+        .step-btn { padding: 10px 24px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border); transition: var(--transition); }
+        .step-btn-primary { background: var(--secondary); color: #fff; border-color: var(--secondary); }
+        .step-btn-primary:hover { background: var(--secondary-hover); }
+        .step-btn-secondary { background: transparent; color: var(--text-muted); }
+        .step-btn-secondary:hover { background: var(--bg-surface); color: var(--text-main); }
+        .step-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .step-indicator { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .step-card { border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 1rem; background: var(--bg-surface); display: none; }
+        .step-card.active { display: block; animation: fadeSlideIn 0.4s ease; }
+        @keyframes fadeSlideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .step-card h4 { font-size: 1rem; margin-bottom: 0.75rem; }
+        .step-formula { background: rgba(15,23,42,0.8); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; font-family: 'SF Mono','Cascadia Code',monospace; font-size: 0.85rem; margin: 0.75rem 0; overflow-x: auto; }
+        .formula-result { font-weight: 800; font-size: 1.1rem; }
+
+        /* RANGE VISUAL */
+        .range-visual { margin: 2rem 0; }
+        .range-row { display: flex; align-items: center; margin-bottom: 0.75rem; }
+        .range-label { width: 110px; flex-shrink: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .range-track { flex: 1; height: 44px; position: relative; background: rgba(51,65,85,0.2); border-radius: 6px; overflow: hidden; }
+        .range-block { position: absolute; top: 2px; bottom: 2px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #fff; transition: all 0.6s ease; overflow: hidden; min-width: 2px; }
+        .range-block span { white-space: nowrap; padding: 0 4px; }
+
+        /* MINI BAR */
+        .mini-bar { height: 6px; border-radius: 3px; background: rgba(51,65,85,0.3); overflow: hidden; margin-top: 4px; }
+        .mini-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+
+        /* ACTION CARDS */
+        .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .action-card { padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-surface); }
+        .action-card h4 { font-size: 0.85rem; margin-bottom: 0.75rem; }
+        .action-number { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; font-size: 0.7rem; font-weight: 800; margin-right: 0.5rem; }
+
+        /* GLOSSARY */
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; }
+        .glossary-item { display: flex; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.85rem; }
+        .glossary-term { font-weight: 700; color: var(--secondary); white-space: nowrap; min-width: 80px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .compare-grid, .action-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.75rem; }
+            .range-label { width: 70px; font-size: 0.65rem; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .container { padding: 1rem; }
+        }
+        @media print {
+            .top-nav { display: none; }
+            body { background: #fff; color: #1a1a1a; }
+            .card, .stat-card, .step-card, .compare-card, .action-card, .fund-card { border: 1px solid #ccc; background: #f9f9f9; }
+            .collapsible-body.collapsed { max-height: none !important; }
+            .step-card { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+    <div class="nav-inner">
+        <span class="nav-brand">ISC FIFO Report</span>
+        <div class="nav-sep"></div>
+        <a href="#background" class="nav-link active">B&#7889;i c&#7843;nh</a>
+        <a href="#fundamentals" class="nav-link">N&#7873;n t&#7843;ng</a>
+        <a href="#divergence" class="nav-link">LP &#8800; M2</a>
+        <a href="#case1" class="nav-link">Case 1: PO</a>
+        <a href="#case2" class="nav-link">Case 2: Issuance</a>
+        <a href="#actions" class="nav-link">H&#224;nh &#273;&#7897;ng</a>
+        <a href="#glossary" class="nav-link">Thu&#7853;t ng&#7919;</a>
+    </div>
+</nav>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- HERO                                                   -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="hero">
+    <div class="hero-badge">A3 Problem Solving Report</div>
+    <h1>FIFO Matching Engine<br>v&#224; Lead Plan</h1>
+    <p>T&#7841;i sao hai h&#7879; th&#7889;ng cho ra k&#7871;t qu&#7843; kh&#225;c nhau? B&#225;o c&#225;o n&#224;y gi&#7843;i th&#237;ch c&#225;ch h&#7879; th&#7889;ng ho&#7841;t &#273;&#7897;ng, nguy&#234;n nh&#226;n g&#7889;c r&#7877;, v&#224; gi&#7843;i ph&#225;p.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 1. BACKGROUND (A3 Box 1)                               -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="background">
+    <div class="section-label">A3-1 &middot; B&#7889;i c&#7843;nh</div>
+    <div class="section-title">V&#7845;n &#273;&#7873; c&#7847;n gi&#7843;i quy&#7871;t</div>
+    <div class="divider"></div>
+
+    <div class="compare-grid">
+        <div class="compare-card" style="background:rgba(96,165,250,0.06);border-color:rgba(96,165,250,0.2)">
+            <h4 style="color:var(--info)">LP &mdash; Lead Plan</h4>
+            <p style="font-size:0.9rem;color:var(--text-muted)">B&#7843;ng Google Sheets do &#273;&#7897;i mua h&#224;ng s&#7917; d&#7909;ng. T&#237;nh shortage &#7903; m&#7913;c <strong>BOM t&#7893;ng h&#7907;p</strong> b&#7857;ng c&#244;ng th&#7913;c &#273;&#417;n gi&#7843;n: c&#7897;ng t&#7845;t c&#7843; ngu&#7891;n cung, tr&#7915; nhu c&#7847;u.</p>
+            <div style="margin-top:1rem;font-size:1.5rem;font-weight:800;color:var(--info)">K&#7871;t lu&#7853;n: "&#272;&#7911; h&#224;ng"</div>
+        </div>
+        <div class="compare-card" style="background:rgba(52,211,153,0.06);border-color:rgba(52,211,153,0.2)">
+            <h4 style="color:var(--success)">M2 &mdash; FIFO Matching Engine</h4>
+            <p style="font-size:0.9rem;color:var(--text-muted)">H&#7879; th&#7889;ng BigQuery t&#7921; &#273;&#7897;ng. T&#237;nh shortage &#7903; m&#7913;c <strong>t&#7915;ng VPO</strong> v&#7899;i b&#7897; l&#7885;c ch&#7889;ng t&#237;nh tr&#249;ng v&#224; ph&#226;n b&#7893; FIFO tu&#7847;n t&#7921;.</p>
+            <div style="margin-top:1rem;font-size:1.5rem;font-weight:800;color:var(--danger)">K&#7871;t lu&#7853;n: "Thi&#7871;u h&#224;ng"</div>
+        </div>
+    </div>
+
+    <div class="callout callout-warning" style="margin-top:1.5rem">
+        <strong>C&#249;ng d&#7919; li&#7879;u, kh&#225;c k&#7871;t qu&#7843; &mdash; ai &#273;&#250;ng?</strong>
+        C&#7843; hai &#273;&#7873;u &#273;&#250;ng theo c&#225;ch t&#237;nh c&#7911;a m&#236;nh. B&#225;o c&#225;o n&#224;y gi&#7843;i th&#237;ch <strong>t&#7841;i sao</strong> ch&#250;ng kh&#225;c nhau, &#273;&#7875; b&#7841;n c&#243; th&#7875; ra quy&#7871;t &#273;&#7883;nh &#273;&#250;ng.
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 2. SYSTEM FUNDAMENTALS (A3 Box 2)                      -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="fundamentals">
+    <div class="section-label">A3-2 &middot; Hi&#7879;n tr&#7841;ng h&#7879; th&#7889;ng</div>
+    <div class="section-title">9 kh&#225;i ni&#7879;m n&#7873;n t&#7843;ng</div>
+    <div class="section-subtitle">Hi&#7875;u r&#245; c&#225;c kh&#225;i ni&#7879;m n&#224;y tr&#432;&#7899;c khi &#273;i v&#224;o ph&#226;n t&#237;ch chi ti&#7871;t</div>
+    <div class="divider"></div>
+
+    <!-- 2.1 Stock Update Cycle -->
+    <div class="fund-card">
+        <div class="fund-num">01</div>
+        <h3>C&#7853;p nh&#7853;t t&#7891;n kho &mdash; Chu k&#7923; h&#224;ng tu&#7847;n</h3>
+        <div class="fund-desc">Kho &#273;&#432;&#7907;c ki&#7875;m &#273;&#7871;m v&#224;o <strong>th&#7913; Hai h&#224;ng tu&#7847;n</strong>. S&#7889; li&#7879;u n&#224;y (SNAPSHOT_DATE) l&#224; "s&#7921; th&#7853;t" m&#224; M2 d&#7921;a v&#224;o. Trong tu&#7847;n, t&#7891;n kho c&#243; th&#7875; thay &#273;&#7893;i nh&#432;ng h&#7879; th&#7889;ng ch&#7881; th&#7845;y gi&#225; tr&#7883; ng&#224;y th&#7913; Hai.</div>
+        <div class="svg-wrap">
+            <svg viewBox="0 0 700 100" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <line x1="50" y1="50" x2="650" y2="50" stroke="#334155" stroke-width="2"/>
+                <!-- Mon markers -->
+                <circle cx="100" cy="50" r="14" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2"/>
+                <text x="100" y="54" text-anchor="middle" fill="#38bdf8" font-size="8" font-weight="800">T2</text>
+                <text x="100" y="80" text-anchor="middle" fill="#38bdf8" font-size="9" font-weight="700">Ch&#7889;t kho</text>
+
+                <circle cx="186" cy="50" r="6" fill="none" stroke="#334155" stroke-width="1.5"/>
+                <text x="186" y="30" text-anchor="middle" fill="#64748b" font-size="8">T3</text>
+                <circle cx="272" cy="50" r="6" fill="none" stroke="#334155" stroke-width="1.5"/>
+                <text x="272" y="30" text-anchor="middle" fill="#64748b" font-size="8">T4</text>
+                <circle cx="358" cy="50" r="6" fill="none" stroke="#334155" stroke-width="1.5"/>
+                <text x="358" y="30" text-anchor="middle" fill="#64748b" font-size="8">T5</text>
+                <circle cx="444" cy="50" r="6" fill="none" stroke="#334155" stroke-width="1.5"/>
+                <text x="444" y="30" text-anchor="middle" fill="#64748b" font-size="8">T6</text>
+                <circle cx="530" cy="50" r="6" fill="none" stroke="#334155" stroke-width="1.5"/>
+                <text x="530" y="30" text-anchor="middle" fill="#64748b" font-size="8">T7</text>
+                <circle cx="616" cy="50" r="6" fill="none" stroke="#334155" stroke-width="1.5"/>
+                <text x="616" y="30" text-anchor="middle" fill="#64748b" font-size="8">CN</text>
+
+                <!-- Next Monday -->
+                <circle cx="650" cy="50" r="14" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2"/>
+                <text x="650" y="54" text-anchor="middle" fill="#38bdf8" font-size="8" font-weight="800">T2</text>
+                <text x="650" y="80" text-anchor="middle" fill="#38bdf8" font-size="9" font-weight="700">Ch&#7889;t kho</text>
+
+                <!-- Bracket -->
+                <path d="M115,90 L375,90" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+                <text x="245" y="98" text-anchor="middle" fill="#94a3b8" font-size="8">H&#7879; th&#7889;ng d&#249;ng s&#7889; li&#7879;u c&#361; trong tu&#7847;n n&#224;y</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 2.2 GROSS_DEMAND Formula -->
+    <div class="fund-card">
+        <div class="fund-num">02</div>
+        <h3>GROSS_DEMAND &mdash; Nhu c&#7847;u nguy&#234;n li&#7879;u</h3>
+        <div class="fund-desc">S&#7889; l&#432;&#7907;ng nguy&#234;n li&#7879;u c&#7847;n cho m&#7897;t VPO, &#273;&#227; t&#237;nh hao h&#7909;t (tolerance).</div>
+        <div class="fund-formula">
+            <div style="color:var(--text-muted);margin-bottom:0.5rem">Ph&#432;&#417;ng ph&#225;p COMPLETION (m&#7863;c &#273;&#7883;nh):</div>
+            GROSS_DEMAND = (<span style="color:var(--warning)">Order_Qty</span> &minus; <span style="color:var(--success)">Completion_Qty</span>) &times; <span style="color:var(--accent)">BOM_Consumption</span> &times; (1 + <span style="color:var(--danger)">Tolerance%</span>)
+        </div>
+        <div class="equation">
+            <div class="eq-block eq-demand"><small>&#272;&#417;n h&#224;ng</small>100</div>
+            <div class="eq-op">&minus;</div>
+            <div class="eq-block eq-supply"><small>&#272;&#227; xong</small>20</div>
+            <div class="eq-op">&times;</div>
+            <div class="eq-block" style="background:rgba(56,189,248,0.12);color:var(--accent);border-color:rgba(56,189,248,0.3)"><small>BOM</small>2.5</div>
+            <div class="eq-op">&times;</div>
+            <div class="eq-block eq-shortage"><small>1+T (7%)</small>1.07</div>
+            <div class="eq-op">=</div>
+            <div class="eq-block eq-result"><small>GROSS</small>214</div>
+        </div>
+    </div>
+
+    <!-- 2.3 Tolerance -->
+    <div class="fund-card">
+        <div class="fund-num">03</div>
+        <h3>Tolerance &mdash; CS vs ISC (LP)</h3>
+        <div class="fund-desc">Tolerance l&#224; % hao h&#7909;t cho ph&#233;p, c&#7897;ng th&#234;m v&#224;o nhu c&#7847;u &#273;&#7875; &#273;&#7843;m b&#7843;o mua &#273;&#7911;. Hai ngu&#7891;n tolerance kh&#225;c nhau d&#7851;n &#273;&#7871;n k&#7871;t qu&#7843; kh&#225;c nhau.</div>
+        <div class="svg-wrap">
+            <svg viewBox="0 0 750 180" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <!-- CS Tolerance row -->
+                <text x="10" y="30" fill="#34d399" font-size="11" font-weight="700">CS (HQ)</text>
+                <rect x="100" y="16" width="28" height="24" rx="4" fill="rgba(52,211,153,0.25)" stroke="#34d399" stroke-width="1"/>
+                <text x="114" y="32" text-anchor="middle" fill="#34d399" font-size="9" font-weight="700">3%</text>
+                <rect x="138" y="16" width="42" height="24" rx="4" fill="rgba(52,211,153,0.35)" stroke="#34d399" stroke-width="1"/>
+                <text x="159" y="32" text-anchor="middle" fill="#34d399" font-size="9" font-weight="700">5%</text>
+                <rect x="190" y="16" width="56" height="24" rx="4" fill="rgba(52,211,153,0.45)" stroke="#34d399" stroke-width="1"/>
+                <text x="218" y="32" text-anchor="middle" fill="#34d399" font-size="9" font-weight="700">7%</text>
+                <rect x="256" y="16" width="84" height="24" rx="4" fill="rgba(52,211,153,0.55)" stroke="#34d399" stroke-width="1"/>
+                <text x="298" y="32" text-anchor="middle" fill="#34d399" font-size="9" font-weight="700">12%</text>
+                <text x="360" y="30" fill="#94a3b8" font-size="9">Thay &#273;&#7893;i theo BOM &mdash; t&#7915; China HQ</text>
+
+                <!-- LP Tolerance row -->
+                <text x="10" y="80" fill="#60a5fa" font-size="11" font-weight="700">LP (ISC)</text>
+                <rect x="100" y="66" width="200" height="24" rx="4" fill="rgba(96,165,250,0.25)" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="200" y="82" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="800">M&#7863;c &#273;&#7883;nh 10%</text>
+                <rect x="310" y="66" width="130" height="24" rx="4" fill="rgba(96,165,250,0.15)" stroke="#60a5fa" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="375" y="82" text-anchor="middle" fill="#60a5fa" font-size="9" font-weight="700">Override: 5&ndash;20%</text>
+                <text x="460" y="80" fill="#94a3b8" font-size="9">Linh ho&#7841;t theo planner</text>
+
+                <!-- Problem callout -->
+                <rect x="100" y="110" width="600" height="55" rx="8" fill="rgba(248,113,113,0.08)" stroke="#f87171" stroke-width="1"/>
+                <text x="120" y="130" fill="#f87171" font-size="10" font-weight="700">V&#7845;n &#273;&#7873; v&#7899;i CS Tolerance:</text>
+                <text x="120" y="148" fill="#94a3b8" font-size="9">CS tolerance t&#7915; China HQ mang t&#237;nh <tspan font-weight="700" fill="#f87171">k&#7929; thu&#7853;t</tspan> (thi&#7871;t k&#7871; s&#7843;n ph&#7849;m), kh&#244;ng ph&#7843;i d&#7919; li&#7879;u s&#7843;n xu&#7845;t th&#7921;c t&#7871; c&#7911;a ISC.</text>
+                <text x="120" y="160" fill="#94a3b8" font-size="9">SC team kh&#244;ng tin t&#432;&#7903;ng &#273;&#7875; d&#249;ng tr&#7921;c ti&#7871;p &rarr; LP d&#249;ng buffer ri&#234;ng (m&#7863;c &#273;&#7883;nh 10%, override theo NL).</text>
+            </svg>
+        </div>
+        <div class="callout callout-warning" style="margin-top:0.5rem">
+            <strong>T&#7841;i sao LP kh&#244;ng d&#249;ng CS tolerance?</strong>
+            CS tolerance &#273;&#7871;n t&#7915; b&#7897; ph&#7853;n thi&#7871;t k&#7871; (China HQ), ph&#7843;n &#225;nh ti&#234;u chu&#7849;n k&#7929; thu&#7853;t s&#7843;n ph&#7849;m &mdash; kh&#244;ng ph&#7843;i d&#7919; li&#7879;u s&#7843;n xu&#7845;t th&#7921;c t&#7871; m&#224; SC c&#243; th&#7875; tham chi&#7871;u.
+            V&#236; v&#7853;y &#273;&#7897;i mua (SC) d&#249;ng buffer ri&#234;ng: <strong>m&#7863;c &#273;&#7883;nh 10%</strong>, c&#243; th&#7875; <strong>override 5&ndash;20%</strong> (ho&#7863;c h&#417;n) t&#249;y t&#7915;ng nguy&#234;n li&#7879;u theo kinh nghi&#7879;m v&#7853;n h&#224;nh.
+        </div>
+    </div>
+
+    <!-- 2.4 Issuance Methods — HIGHLIGHTED -->
+    <div class="fund-card" style="border:2px solid var(--secondary);box-shadow:0 0 30px rgba(129,140,248,0.15)">
+        <div class="fund-num">04</div>
+        <h3 style="font-size:1.25rem">H&#7879; th&#7889;ng c&#243; 2 c&#225;ch t&#237;nh GROSS_DEMAND</h3>
+        <div class="fund-desc" style="font-size:0.95rem">
+            C&#7843; hai ph&#432;&#417;ng ph&#225;p <strong>lu&#244;n &#273;&#432;&#7907;c t&#237;nh song song</strong> &#273;&#7871;n m&#7913;c Assign_Sourcing, hi&#7875;n th&#7883; c&#7843; hai cho ng&#432;&#7901;i d&#249;ng ch&#7885;n khi t&#7841;o PR_Final.
+            Ph&#432;&#417;ng ph&#225;p &#273;&#432;&#7907;c ch&#7885;n t&#7921; &#273;&#7897;ng theo nh&#243;m nguy&#234;n li&#7879;u (MAIN_GROUP) qua <strong>Method_Override_Config</strong>.
+        </div>
+
+        <!-- Two method cards side by side -->
+        <div class="compare-grid" style="margin:1.5rem 0">
+            <div class="compare-card" style="background:rgba(251,191,36,0.06);border-color:rgba(251,191,36,0.25)">
+                <h4 style="color:var(--warning);font-size:1rem">COMPLETION</h4>
+                <div class="fund-formula" style="margin:0.75rem 0">
+                    (<span style="color:var(--warning)">Order</span> &minus; <span style="color:var(--success)">Completed</span>) &times; BOM &times; (1+T)
+                </div>
+                <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.6">
+                    D&#7921;a v&#224;o s&#7889; <strong>th&#224;nh ph&#7849;m &#273;&#227; s&#7843;n xu&#7845;t xong</strong>.
+                    <br>VD: &#272;&#417;n 100, xong 20 &rarr; c&#242;n c&#7847;n NL cho 80.
+                </p>
+                <div style="margin-top:0.75rem;padding:0.5rem 0.75rem;background:rgba(251,191,36,0.1);border-radius:6px;font-size:0.8rem">
+                    <strong style="color:var(--warning)">Ph&#249; h&#7907;p:</strong> NL kh&#244;ng c&#243; d&#7919; li&#7879;u xu&#7845;t kho chi ti&#7871;t (VD: Bao b&#236;)
+                </div>
+                <div style="margin-top:0.5rem"><span class="badge badge-warning">M&#7862;C &#272;&#7882;NH</span></div>
+            </div>
+            <div class="compare-card" style="background:rgba(52,211,153,0.06);border-color:rgba(52,211,153,0.25)">
+                <h4 style="color:var(--success);font-size:1rem">ISSUANCE</h4>
+                <div class="fund-formula" style="margin:0.75rem 0">
+                    MAX(0, Order &times; BOM &times; (1+T) &minus; <span style="color:var(--success)">Issued</span>)
+                </div>
+                <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.6">
+                    D&#7921;a v&#224;o s&#7889; <strong>nguy&#234;n li&#7879;u &#273;&#227; xu&#7845;t kho</strong>.
+                    <br>VD: C&#7847;n 200 NL, xu&#7845;t r&#7891;i 150 &rarr; c&#242;n thi&#7871;u 50.
+                </p>
+                <div style="margin-top:0.75rem;padding:0.5rem 0.75rem;background:rgba(52,211,153,0.1);border-radius:6px;font-size:0.8rem">
+                    <strong style="color:var(--success)">Ph&#249; h&#7907;p:</strong> NL c&#243; tracking xu&#7845;t kho t&#7889;t (VD: Ch&#236;)
+                </div>
+                <div style="margin-top:0.5rem"><span class="badge badge-success">CH&#205;NH X&#193;C H&#416;N</span></div>
+            </div>
+        </div>
+
+        <!-- Flow: how it works in practice -->
+        <div class="svg-wrap">
+            <svg viewBox="0 0 750 170" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <!-- Config box -->
+                <rect x="10" y="10" width="170" height="55" rx="8" fill="rgba(129,140,248,0.12)" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="95" y="32" text-anchor="middle" fill="#818cf8" font-size="9" font-weight="700">Method_Override_Config</text>
+                <text x="95" y="48" text-anchor="middle" fill="#94a3b8" font-size="8">Per MAIN_GROUP</text>
+                <!-- Arrow -->
+                <line x1="180" y1="37" x2="220" y2="37" stroke="#94a3b8" stroke-width="1.5"/>
+                <polygon points="217,32 227,37 217,42" fill="#94a3b8"/>
+
+                <!-- Both computed -->
+                <rect x="230" y="5" width="200" height="30" rx="6" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" stroke-width="1"/>
+                <text x="330" y="24" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="700">GROSS_DEMAND_COMPLETION</text>
+                <rect x="230" y="42" width="200" height="30" rx="6" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="1"/>
+                <text x="330" y="61" text-anchor="middle" fill="#34d399" font-size="9" font-weight="700">GROSS_DEMAND_ISSUANCE</text>
+                <text x="330" y="88" text-anchor="middle" fill="#818cf8" font-size="8" font-weight="600">C&#7843; hai lu&#244;n &#273;&#432;&#7907;c t&#237;nh</text>
+
+                <!-- Arrow to Assign_Sourcing -->
+                <line x1="430" y1="37" x2="480" y2="37" stroke="#94a3b8" stroke-width="1.5"/>
+                <polygon points="477,32 487,37 477,42" fill="#94a3b8"/>
+
+                <!-- Assign_Sourcing shows both -->
+                <rect x="490" y="5" width="130" height="65" rx="8" fill="rgba(129,140,248,0.08)" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="555" y="26" text-anchor="middle" fill="#818cf8" font-size="9" font-weight="700">Assign_Sourcing</text>
+                <text x="555" y="42" text-anchor="middle" fill="#94a3b8" font-size="8">Hi&#7875;n th&#7883; c&#7843; 2</text>
+                <text x="555" y="56" text-anchor="middle" fill="#94a3b8" font-size="8">shortage k&#7871;t qu&#7843;</text>
+
+                <!-- Arrow to PR_Final -->
+                <line x1="620" y1="37" x2="660" y2="37" stroke="#94a3b8" stroke-width="1.5"/>
+                <polygon points="657,32 667,37 657,42" fill="#94a3b8"/>
+
+                <!-- PR_Final -->
+                <rect x="670" y="10" width="70" height="55" rx="8" fill="rgba(129,140,248,0.15)" stroke="#818cf8" stroke-width="2"/>
+                <text x="705" y="34" text-anchor="middle" fill="#818cf8" font-size="10" font-weight="800">PR</text>
+                <text x="705" y="50" text-anchor="middle" fill="#818cf8" font-size="10" font-weight="800">Final</text>
+
+                <!-- Bottom note -->
+                <rect x="10" y="105" width="730" height="50" rx="8" fill="rgba(56,189,248,0.06)" stroke="rgba(56,189,248,0.2)" stroke-width="1"/>
+                <text x="30" y="126" fill="#38bdf8" font-size="9" font-weight="700">Quy tr&#236;nh:</text>
+                <text x="30" y="142" fill="#94a3b8" font-size="9">Config ch&#7885;n method per NL group &rarr; C&#7843; 2 method &#273;&#432;&#7907;c t&#237;nh &rarr; Assign_Sourcing hi&#7875;n th&#7883; c&#7843; 2 &rarr; User xem v&#224; ch&#7885;n d&#249;ng cho PR_Final</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 2.5 PO Filtering -->
+    <div class="fund-card">
+        <div class="fund-num">05</div>
+        <h3>L&#7885;c PO &mdash; Ch&#7889;ng t&#237;nh tr&#249;ng (Double-Count Prevention)</h3>
+        <div class="fund-desc">N&#7871;u ng&#224;y ETA c&#7911;a PO &le; ng&#224;y ch&#7889;t t&#7891;n kho &rarr; PO &#273;&#243; &#273;&#227; &#273;&#7871;n kho &rarr; &#273;&#227; n&#7857;m trong s&#7889; t&#7891;n &rarr; <strong>kh&#244;ng t&#237;nh l&#7841;i</strong>.</div>
+        <div class="fund-formula">
+            <div style="color:var(--text-muted);margin-bottom:0.5rem">ETA Waterfall (th&#7913; t&#7921; &#432;u ti&#234;n):</div>
+            <span style="color:var(--success)">1. Actual_Arrival</span> &rarr; <span style="color:var(--accent)">2. Current_ETA</span> &rarr; <span style="color:var(--warning)">3. Agreed_Date</span> &rarr; <span style="color:var(--text-muted)">4. Requested_Date</span>
+            <br><br>
+            <div style="color:var(--danger)">Quy t&#7855;c: N&#7871;u Effective_ETA &le; MAX(SNAPSHOT_DATE) &rarr; LO&#7840;I B&#7886; PO</div>
+        </div>
+    </div>
+
+    <!-- 2.6 FIFO Allocation -->
+    <div class="fund-card">
+        <div class="fund-num">06</div>
+        <h3>FIFO Allocation &mdash; V&#224;o tr&#432;&#7899;c, Ra tr&#432;&#7899;c</h3>
+        <div class="fund-desc">Ngu&#7891;n cung &#273;&#432;&#7907;c x&#7871;p th&#224;nh d&#227;y (theo ng&#224;y &#273;&#7871;n). Nhu c&#7847;u &#273;&#432;&#7907;c x&#7871;p th&#224;nh d&#227;y (theo ng&#224;y giao). Ph&#7847;n ch&#7891;ng l&#7845;n = s&#7889; &#273;&#432;&#7907;c c&#7845;p ph&#225;t.</div>
+        <div class="fund-formula">
+            ALLOCATED_QTY = MAX(0, MIN(Supply_End, Demand_End) &minus; MAX(Supply_Start, Demand_Start))
+        </div>
+        <div class="svg-wrap">
+            <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <!-- Supply bar -->
+                <text x="10" y="45" fill="#34d399" font-size="10" font-weight="700">Ngu&#7891;n cung</text>
+                <rect x="100" y="30" width="200" height="30" rx="4" fill="rgba(52,211,153,0.3)" stroke="#34d399" stroke-width="1.5"/>
+                <text x="200" y="50" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700">Stock + PO</text>
+                <!-- Demand bar -->
+                <text x="10" y="100" fill="#fbbf24" font-size="10" font-weight="700">Nhu c&#7847;u</text>
+                <rect x="150" y="85" width="350" height="30" rx="4" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+                <text x="200" y="105" text-anchor="middle" fill="#fbbf24" font-size="9">VPO 1</text>
+                <text x="325" y="105" text-anchor="middle" fill="#fbbf24" font-size="9">VPO 2</text>
+                <text x="440" y="105" text-anchor="middle" fill="#fbbf24" font-size="9">VPO 3</text>
+                <!-- Overlap -->
+                <rect x="150" y="60" width="150" height="25" rx="4" fill="rgba(52,211,153,0.2)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <text x="225" y="77" text-anchor="middle" fill="#34d399" font-size="10" font-weight="800">= &#272;&#432;&#7907;c c&#7845;p</text>
+                <!-- Shortage -->
+                <rect x="300" y="120" width="200" height="20" rx="4" fill="rgba(248,113,113,0.15)" stroke="#f87171" stroke-width="1" stroke-dasharray="3,3"/>
+                <text x="400" y="134" text-anchor="middle" fill="#f87171" font-size="9" font-weight="700">= Thi&#7871;u h&#7909;t (Shortage)</text>
+                <!-- Arrow labels -->
+                <text x="100" y="170" fill="#94a3b8" font-size="8">0</text>
+                <text x="500" y="170" fill="#94a3b8" font-size="8">&rarr; L&#432;&#7907;ng t&#237;ch l&#361;y</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 2.7 LP Formula -->
+    <div class="fund-card">
+        <div class="fund-num">07</div>
+        <h3>LP Formula &mdash; C&#244;ng th&#7913;c Lead Plan</h3>
+        <div class="fund-desc">LP t&#237;nh &#273;&#417;n gi&#7843;n &#7903; m&#7913;c <strong>BOM t&#7893;ng h&#7907;p</strong>: c&#7897;ng t&#7845;t c&#7843; ngu&#7891;n cung (kh&#244;ng l&#7885;c), tr&#7915; nhu c&#7847;u. N&#7871;u k&#7871;t qu&#7843; &lt; 0 th&#236; c&#7847;n &#273;&#7863;t h&#224;ng.</div>
+        <div class="fund-formula">
+            LP = CEILING( Demand &times; <span style="color:var(--info)">110%</span> &minus; Stock &minus; <span style="color:var(--info)">ALL POs</span> &minus; Issuance , SPQ )
+            <br><br>
+            <span style="color:var(--text-muted)">&#272;&#7863;c &#273;i&#7875;m: Kh&#244;ng l&#7885;c PO c&#361;. Kh&#244;ng ph&#226;n b&#7893; FIFO. T&#237;nh t&#7893;ng cho c&#7843; BOM.</span>
+        </div>
+    </div>
+
+    <!-- 2.8 Net Shortage -->
+    <div class="fund-card">
+        <div class="fund-num">08</div>
+        <h3>Net Shortage &mdash; Thi&#7871;u h&#7909;t r&#242;ng</h3>
+        <div class="fund-desc">Sau khi FIFO ph&#226;n b&#7893; xong, ph&#7847;n nhu c&#7847;u kh&#244;ng &#273;&#432;&#7907;c &#273;&#225;p &#7913;ng l&#224; shortage.</div>
+        <div class="equation">
+            <div class="eq-block eq-demand"><small>GROSS_DEMAND</small>214</div>
+            <div class="eq-op">&minus;</div>
+            <div class="eq-block eq-supply"><small>ALLOCATED</small>80</div>
+            <div class="eq-op">=</div>
+            <div class="eq-block eq-shortage"><small>NET_SHORTAGE</small>134</div>
+        </div>
+    </div>
+
+    <!-- 2.9 M2 Pipeline -->
+    <div class="fund-card">
+        <div class="fund-num">09</div>
+        <h3>M2 Pipeline &mdash; To&#224;n b&#7897; quy tr&#236;nh</h3>
+        <div class="fund-desc">D&#7919; li&#7879;u &#273;i qua 5 b&#432;&#7899;c t&#7915; thu th&#7853;p &#273;&#7871;n k&#7871;t qu&#7843;.</div>
+        <div class="svg-wrap">
+            <svg viewBox="0 0 920 210" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <rect x="10" y="25" width="130" height="55" rx="10" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="1.5"/>
+                <text x="75" y="48" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700">T&#7890;N KHO</text>
+                <text x="75" y="68" text-anchor="middle" fill="#34d399" font-size="14" font-weight="800">Monday</text>
+                <rect x="10" y="100" width="130" height="55" rx="10" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="1.5"/>
+                <text x="75" y="123" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700">PO &#272;ANG V&#7872;</text>
+                <text x="75" y="143" text-anchor="middle" fill="#34d399" font-size="14" font-weight="800">ETA &gt; Snap</text>
+                <line x1="140" y1="52" x2="175" y2="90" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="140" y1="128" x2="175" y2="90" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="175" y1="90" x2="210" y2="90" stroke="#94a3b8" stroke-width="1.5"/>
+                <polygon points="207,85 217,90 207,95" fill="#94a3b8"/>
+                <rect x="220" y="52" width="150" height="76" rx="10" fill="rgba(248,113,113,0.1)" stroke="#f87171" stroke-width="1.5"/>
+                <text x="295" y="78" text-anchor="middle" fill="#f87171" font-size="10" font-weight="700">B&#7896; L&#7884;C ETA</text>
+                <text x="295" y="96" text-anchor="middle" fill="#94a3b8" font-size="9">Lo&#7841;i PO &#273;&#227; &#273;&#7871;n kho</text>
+                <line x1="370" y1="90" x2="417" y2="90" stroke="#94a3b8" stroke-width="1.5"/>
+                <polygon points="414,85 424,90 414,95" fill="#94a3b8"/>
+                <rect x="427" y="52" width="130" height="76" rx="10" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="1.5"/>
+                <text x="492" y="78" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700">SUPPLY STACK</text>
+                <text x="492" y="96" text-anchor="middle" fill="#34d399" font-size="9">Ngu&#7891;n cung h&#7919;u hi&#7879;u</text>
+                <line x1="557" y1="90" x2="597" y2="90" stroke="#94a3b8" stroke-width="1.5"/>
+                <polygon points="594,85 604,90 594,95" fill="#94a3b8"/>
+                <rect x="607" y="32" width="120" height="116" rx="10" fill="rgba(129,140,248,0.15)" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="667" y="62" text-anchor="middle" fill="#818cf8" font-size="11" font-weight="700">FIFO</text>
+                <text x="667" y="80" text-anchor="middle" fill="#818cf8" font-size="9">Ph&#226;n b&#7893;</text>
+                <text x="667" y="96" text-anchor="middle" fill="#818cf8" font-size="9">tu&#7847;n t&#7921;</text>
+                <rect x="627" y="168" width="80" height="35" rx="8" fill="rgba(251,191,36,0.15)" stroke="#fbbf24" stroke-width="1.5"/>
+                <text x="667" y="185" text-anchor="middle" fill="#fbbf24" font-size="8" font-weight="700">VPO Demand</text>
+                <text x="667" y="198" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="800">per VPO</text>
+                <line x1="667" y1="168" x2="667" y2="148" stroke="#fbbf24" stroke-width="1.5"/>
+                <polygon points="662,152 667,145 672,152" fill="#fbbf24"/>
+                <line x1="727" y1="90" x2="767" y2="90" stroke="#94a3b8" stroke-width="1.5"/>
+                <polygon points="764,85 774,90 764,95" fill="#94a3b8"/>
+                <rect x="777" y="52" width="130" height="76" rx="10" fill="rgba(248,113,113,0.15)" stroke="#f87171" stroke-width="1.5"/>
+                <text x="842" y="78" text-anchor="middle" fill="#f87171" font-size="10" font-weight="700">SHORTAGE</text>
+                <text x="842" y="96" text-anchor="middle" fill="#94a3b8" font-size="9">per VPO</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 3. WHY LP != M2 (A3 Box 3-4)                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="divergence">
+    <div class="section-label">A3-3/4 &middot; Nguy&#234;n nh&#226;n g&#7889;c r&#7877;</div>
+    <div class="section-title">T&#7841;i sao LP &#8800; M2?</div>
+    <div class="section-subtitle">4 y&#7871;u t&#7889; g&#226;y ra s&#7921; kh&#225;c bi&#7879;t gi&#7919;a hai h&#7879; th&#7889;ng</div>
+    <div class="divider"></div>
+
+    <!-- Fishbone / Summary SVG -->
+    <div class="card glass-card">
+        <div class="svg-wrap">
+            <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <!-- Central spine -->
+                <line x1="60" y1="150" x2="700" y2="150" stroke="#818cf8" stroke-width="3"/>
+                <polygon points="697,143 715,150 697,157" fill="#818cf8"/>
+                <!-- Result -->
+                <rect x="710" y="128" width="80" height="44" rx="8" fill="rgba(248,113,113,0.2)" stroke="#f87171" stroke-width="2"/>
+                <text x="750" y="148" text-anchor="middle" fill="#f87171" font-size="9" font-weight="700">LP &#8800; M2</text>
+                <text x="750" y="163" text-anchor="middle" fill="#f87171" font-size="9" font-weight="700">Diverge</text>
+
+                <!-- Factor 1: PO Filtering (top-left) -->
+                <line x1="180" y1="60" x2="250" y2="150" stroke="#f87171" stroke-width="1.5"/>
+                <rect x="80" y="30" width="200" height="55" rx="8" fill="rgba(248,113,113,0.1)" stroke="#f87171" stroke-width="1.5"/>
+                <text x="180" y="52" text-anchor="middle" fill="#f87171" font-size="10" font-weight="700">1. L&#7885;c PO (ETA)</text>
+                <text x="180" y="70" text-anchor="middle" fill="#94a3b8" font-size="8">LP: t&#7845;t c&#7843; PO | M2: ch&#7881; PO ch&#432;a &#273;&#7871;n</text>
+
+                <!-- Factor 2: Issuance (bottom-left) -->
+                <line x1="180" y1="240" x2="250" y2="150" stroke="#fbbf24" stroke-width="1.5"/>
+                <rect x="80" y="215" width="200" height="55" rx="8" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" stroke-width="1.5"/>
+                <text x="180" y="237" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="700">2. Issuance Netting</text>
+                <text x="180" y="255" text-anchor="middle" fill="#94a3b8" font-size="8">LP: BOM level | M2: VPO level</text>
+
+                <!-- Factor 3: Tolerance (top-right) -->
+                <line x1="480" y1="60" x2="500" y2="150" stroke="#38bdf8" stroke-width="1.5"/>
+                <rect x="380" y="30" width="200" height="55" rx="8" fill="rgba(56,189,248,0.1)" stroke="#38bdf8" stroke-width="1.5"/>
+                <text x="480" y="52" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="700">3. Tolerance %</text>
+                <text x="480" y="70" text-anchor="middle" fill="#94a3b8" font-size="8">LP: 10% (override 5-20%) | M2: CS 3-13%</text>
+
+                <!-- Factor 4: VPO Scope (bottom-right) -->
+                <line x1="480" y1="240" x2="500" y2="150" stroke="#34d399" stroke-width="1.5"/>
+                <rect x="380" y="215" width="200" height="55" rx="8" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="1.5"/>
+                <text x="480" y="237" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700">4. VPO Scope</text>
+                <text x="480" y="255" text-anchor="middle" fill="#94a3b8" font-size="8">LP: t&#7845;t c&#7843; VPO | M2: ch&#7881; VPO active</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Detailed comparison table -->
+    <div class="card">
+        <div class="card-header">B&#7843;ng so s&#225;nh chi ti&#7871;t</div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Y&#7871;u t&#7889;</th><th>LP (Lead Plan)</th><th>M2 (FIFO Engine)</th><th>H&#432;&#7899;ng t&#225;c &#273;&#7897;ng</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-danger">L&#7885;c PO</span></td>
+                        <td>T&#237;nh T&#7844;T C&#7842; PO (k&#7875; c&#7843; &#273;&#227; &#273;&#7871;n kho)</td>
+                        <td>Lo&#7841;i PO c&#243; ETA &le; ng&#224;y ch&#7889;t</td>
+                        <td style="color:var(--danger);font-weight:700">M2 th&#7845;y &#237;t supply h&#417;n</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">Issuance</span></td>
+                        <td>T&#7893;ng issuance &#7903; m&#7913;c <strong>BOM</strong></td>
+                        <td>Issuance &#7903; m&#7913;c <strong>VPO</strong> (clip per VPO)</td>
+                        <td style="color:var(--danger);font-weight:700">M2 th&#7845;y shortage cao h&#417;n</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-info">Tolerance</span></td>
+                        <td>M&#7863;c &#273;&#7883;nh 10%, override 5&ndash;20% per NL</td>
+                        <td>CS t&#7915; HQ: 3&ndash;13% per BOM</td>
+                        <td style="color:var(--text-muted)">T&#249;y BOM (ngu&#7891;n kh&#225;c nhau)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-success">VPO Scope</span></td>
+                        <td>T&#7845;t c&#7843; VPO (k&#7875; c&#7843; c&#361;/zombie)</td>
+                        <td>Ch&#7881; VPO active (&lt;60 ng&#224;y, ch&#432;a xong)</td>
+                        <td style="color:var(--success);font-weight:700">M2 th&#7845;y &#237;t demand h&#417;n</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="callout callout-info">
+        <strong>Hai y&#7871;u t&#7889; quan tr&#7885;ng nh&#7845;t:</strong>
+        B&#225;o c&#225;o n&#224;y t&#7853;p trung v&#224;o 2 y&#7871;u t&#7889; ph&#7893; bi&#7871;n nh&#7845;t g&#226;y ra s&#7921; l&#7879;ch gi&#7919;a LP v&#224; M2:
+        <br><strong style="color:var(--danger)">Case 1: PO qu&#225; h&#7841;n</strong> &mdash; PO &#273;&#227; &#273;&#7871;n kho nh&#432;ng ch&#432;a nh&#7853;p h&#7879; th&#7889;ng
+        <br><strong style="color:var(--warning)">Case 2: Issuance g&#7897;p</strong> &mdash; Kho xu&#7845;t nguy&#234;n li&#7879;u g&#7897;p nhi&#7873;u VPO v&#224;o m&#7897;t
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 4. CASE STUDY 1: PO PAST DUE                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="case1">
+    <div class="section-label">A3-3 &middot; Case Study 1</div>
+    <div class="section-title">PO qu&#225; h&#7841;n &mdash; "V&#249;ng ch&#7871;t" d&#7919; li&#7879;u</div>
+    <div class="section-subtitle">BOM 302005090 &middot; &#39532;&#21487;&#21046;&#36896;Y&#31995;&#21015;813UY04&#33639;&#20809;&#31881;&#32418; &middot; D&#7919; li&#7879;u 22 Mar 2026</div>
+    <div class="divider"></div>
+
+    <!-- Key numbers -->
+    <div class="stats-grid">
+        <div class="stat-card stat-demand"><div class="stat-label">Nhu c&#7847;u</div><div class="stat-value">1,048.6</div><div class="stat-sub">5 VPO</div></div>
+        <div class="stat-card stat-supply"><div class="stat-label">Supply h&#7919;u hi&#7879;u</div><div class="stat-value">114.65</div><div class="stat-sub">Sau khi l&#7885;c PO</div></div>
+        <div class="stat-card stat-shortage"><div class="stat-label">M2 Shortage</div><div class="stat-value">993.7</div><div class="stat-sub">Thi&#7871;u nguy&#234;n li&#7879;u</div></div>
+        <div class="stat-card stat-lp"><div class="stat-label">LP Shortage</div><div class="stat-value">0</div><div class="stat-sub">"&#272;&#7911; h&#224;ng"</div></div>
+    </div>
+
+    <!-- Supply Waterfall -->
+    <div class="card glass-card">
+        <div class="card-header">Ph&#7877;u l&#7885;c ngu&#7891;n cung</div>
+        <div class="svg-wrap">
+            <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <text x="10" y="28" fill="#94a3b8" font-size="10" font-weight="600">T&#7892;NG</text>
+                <rect x="120" y="14" width="580" height="28" rx="4" fill="rgba(52,211,153,0.25)" stroke="#34d399" stroke-width="1"/>
+                <text x="410" y="33" text-anchor="middle" fill="#34d399" font-size="13" font-weight="800">1,336.95</text>
+
+                <text x="10" y="68" fill="#f87171" font-size="10" font-weight="600">&minus; PO 652b</text>
+                <rect x="120" y="52" width="495" height="28" rx="4" fill="rgba(248,113,113,0.2)" stroke="#f87171" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="367" y="71" text-anchor="middle" fill="#f87171" font-size="12" font-weight="700">&minus;1,139.0</text>
+                <text x="630" y="71" fill="#94a3b8" font-size="9">ETA 21 Mar &le; Ch&#7889;t 22 Mar</text>
+
+                <text x="10" y="108" fill="#f87171" font-size="10" font-weight="600">&minus; PO 285</text>
+                <rect x="120" y="92" width="36" height="28" rx="4" fill="rgba(248,113,113,0.2)" stroke="#f87171" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="170" y="111" fill="#f87171" font-size="12" font-weight="700">&minus;83.3</text>
+
+                <line x1="120" y1="136" x2="700" y2="136" stroke="#334155" stroke-width="1" stroke-dasharray="3,3"/>
+
+                <text x="10" y="168" fill="#34d399" font-size="10" font-weight="700">H&#7918;U HI&#7878;U</text>
+                <rect x="120" y="152" width="50" height="32" rx="4" fill="rgba(52,211,153,0.3)" stroke="#34d399" stroke-width="2"/>
+                <text x="145" y="173" text-anchor="middle" fill="#34d399" font-size="14" font-weight="800">114.65</text>
+                <text x="185" y="168" fill="#94a3b8" font-size="9">= Kho 86.85 + PO#563: 27.8</text>
+                <text x="185" y="184" fill="#64748b" font-size="9">Ch&#7881; 8.6% ngu&#7891;n cung &#273;&#432;&#7907;c gi&#7919;</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Root cause -->
+    <div class="callout callout-danger">
+        <strong>Nguy&#234;n nh&#226;n: PO 652b (1,139 &#272;V) &#273;&#227; &#273;&#7871;n kho nh&#432;ng ch&#432;a nh&#7853;p U8</strong>
+        Kho nh&#7853;n h&#224;ng th&#7921;c t&#7871; (Nam Ho x&#225;c nh&#7853;n 28/03), nh&#432;ng ch&#432;a c&#7853;p nh&#7853;t v&#224;o h&#7879; th&#7889;ng U8.
+        M2 Engine lo&#7841;i PO n&#224;y ra (ngh&#297; &#273;&#227; trong kho) nh&#432;ng kho ch&#7881; c&#243; 86.85.
+        &rarr; 1,139 &#272;V r&#417;i v&#224;o <strong>"v&#249;ng ch&#7871;t"</strong>: kh&#244;ng &#7903; kho, kh&#244;ng ph&#7843;i PO.
+    </div>
+
+    <!-- Before/After table -->
+    <div class="collapsible-header" onclick="toggleCollapse(this)">
+        <strong>Khi kho nh&#7853;p PO v&#224;o U8 th&#236; sao?</strong>
+    </div>
+    <div class="collapsible-body" style="max-height:400px">
+        <div class="card glass-card">
+            <table style="font-size:0.85rem">
+                <thead><tr><th>Ch&#7881; s&#7889;</th><th style="text-align:right">Hi&#7879;n t&#7841;i</th><th style="text-align:right">Sau khi nh&#7853;p U8</th></tr></thead>
+                <tbody>
+                    <tr><td>T&#7891;n kho</td><td style="text-align:right">86.85</td><td style="text-align:right;color:var(--success);font-weight:700">~1,226</td></tr>
+                    <tr><td>M2 Shortage</td><td style="text-align:right;color:var(--danger)">993.7</td><td style="text-align:right;color:var(--success);font-weight:700">~0</td></tr>
+                    <tr><td>LP QTY</td><td style="text-align:right">0</td><td style="text-align:right">0</td></tr>
+                    <tr style="border-top:2px solid var(--border)"><td style="font-weight:800">M2 = LP?</td><td style="text-align:right"><span class="badge badge-danger">L&#7878;CH</span></td><td style="text-align:right"><span class="badge badge-success">KH&#7898;P</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 5. CASE STUDY 2: ISSUANCE LAZINESS                     -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="case2">
+    <div class="section-label">A3-3 &middot; Case Study 2</div>
+    <div class="section-title">Issuance g&#7897;p &mdash; Kho xu&#7845;t kh&#244;ng t&#225;ch VPO</div>
+    <div class="section-subtitle">BOM 302023503 &middot; Khi kho xu&#7845;t nguy&#234;n li&#7879;u cho nhi&#7873;u VPO nh&#432;ng ch&#7881; ghi nh&#7853;n v&#224;o m&#7897;t VPO</div>
+    <div class="divider"></div>
+
+    <!-- The problem -->
+    <div class="card glass-card">
+        <div class="card-header">V&#7845;n &#273;&#7873;: Xu&#7845;t kho &#273;&#250;ng t&#7893;ng, sai ph&#226;n b&#7893;</div>
+        <div class="svg-wrap">
+            <svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+                <!-- LEFT: Correct behavior -->
+                <text x="190" y="22" text-anchor="middle" fill="#34d399" font-size="13" font-weight="800">&#272;&#250;ng (Expected)</text>
+
+                <rect x="40" y="40" width="130" height="70" rx="8" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" stroke-width="1.5"/>
+                <text x="105" y="62" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="700">VPO C01</text>
+                <text x="105" y="80" text-anchor="middle" fill="#fbbf24" font-size="8">Demand: 14</text>
+                <text x="105" y="98" text-anchor="middle" fill="#34d399" font-size="11" font-weight="800">Issued: 14</text>
+
+                <rect x="210" y="40" width="130" height="70" rx="8" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" stroke-width="1.5"/>
+                <text x="275" y="62" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="700">VPO C06</text>
+                <text x="275" y="80" text-anchor="middle" fill="#fbbf24" font-size="8">Demand: 530</text>
+                <text x="275" y="98" text-anchor="middle" fill="#34d399" font-size="11" font-weight="800">Issued: 530</text>
+
+                <text x="190" y="130" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700">T&#7893;ng: 544 &check; Ph&#226;n b&#7893;: &#273;&#250;ng &check;</text>
+
+                <!-- RIGHT: Actual behavior -->
+                <text x="610" y="22" text-anchor="middle" fill="#f87171" font-size="13" font-weight="800">Th&#7921;c t&#7871; (Actual)</text>
+
+                <rect x="460" y="40" width="130" height="70" rx="8" fill="rgba(248,113,113,0.08)" stroke="#f87171" stroke-width="1.5"/>
+                <text x="525" y="62" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="700">VPO C01</text>
+                <text x="525" y="80" text-anchor="middle" fill="#fbbf24" font-size="8">Demand: 14</text>
+                <text x="525" y="98" text-anchor="middle" fill="#f87171" font-size="11" font-weight="800">Issued: 0</text>
+
+                <rect x="630" y="40" width="130" height="70" rx="8" fill="rgba(248,113,113,0.08)" stroke="#f87171" stroke-width="1.5"/>
+                <text x="695" y="62" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="700">VPO C06</text>
+                <text x="695" y="80" text-anchor="middle" fill="#fbbf24" font-size="8">Demand: 530</text>
+                <text x="695" y="98" text-anchor="middle" fill="#f87171" font-size="11" font-weight="800">Issued: 544</text>
+
+                <text x="610" y="130" text-anchor="middle" fill="#f87171" font-size="10" font-weight="700">T&#7893;ng: 544 &check; Ph&#226;n b&#7893;: SAI &cross;</text>
+
+                <!-- Divider -->
+                <line x1="400" y1="10" x2="400" y2="140" stroke="#334155" stroke-width="1" stroke-dasharray="4,4"/>
+
+                <!-- Bottom: Impact comparison -->
+                <line x1="0" y1="155" x2="800" y2="155" stroke="#334155" stroke-width="1"/>
+
+                <!-- LP impact -->
+                <rect x="40" y="175" width="320" height="70" rx="10" fill="rgba(96,165,250,0.08)" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="200" y="198" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="700">LP: T&#237;nh t&#7893;ng BOM</text>
+                <text x="200" y="218" text-anchor="middle" fill="#94a3b8" font-size="10">T&#7893;ng issued = 544. T&#7893;ng demand = 544.</text>
+                <text x="200" y="235" text-anchor="middle" fill="#34d399" font-size="12" font-weight="800">Shortage = 0 &check;</text>
+
+                <!-- M2 impact -->
+                <rect x="440" y="175" width="320" height="70" rx="10" fill="rgba(248,113,113,0.08)" stroke="#f87171" stroke-width="1.5"/>
+                <text x="600" y="198" text-anchor="middle" fill="#f87171" font-size="11" font-weight="700">M2: T&#237;nh per VPO</text>
+                <text x="600" y="218" text-anchor="middle" fill="#94a3b8" font-size="10">C01: demand 14, issued 0 &rarr; thi&#7871;u 14</text>
+                <text x="600" y="235" text-anchor="middle" fill="#f87171" font-size="12" font-weight="800">Shortage = 14 &cross;</text>
+
+                <!-- Key insight -->
+                <text x="400" y="280" text-anchor="middle" fill="#818cf8" font-size="10" font-weight="700">LP kh&#244;ng b&#7883; &#7843;nh h&#432;&#7903;ng (BOM total &#273;&#250;ng) | M2 th&#7845;y shortage (VPO sai)</text>
+
+                <!-- Bucket vs Cups analogy -->
+                <text x="400" y="320" text-anchor="middle" fill="#64748b" font-size="9">LP nh&#236;n "1 x&#244; n&#432;&#7899;c" (t&#7893;ng &#273;&#250;ng) &mdash; M2 nh&#236;n "5 c&#7889;c ri&#234;ng" (c&#7889;c n&#224;y &#273;&#7847;y tr&#224;n, c&#7889;c kia tr&#7889;ng)</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Real example -->
+    <div class="card" style="margin-top:1rem">
+        <div class="card-header">V&#237; d&#7909; th&#7921;c t&#7871;: BOM 302038502</div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>VPO</th><th style="text-align:right">Demand</th><th style="text-align:right">Issued (kho ghi)</th><th>T&#236;nh tr&#7841;ng</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td class="mono">V2512034C03</td>
+                        <td style="text-align:right">3</td>
+                        <td style="text-align:right;color:var(--danger);font-weight:700">19</td>
+                        <td><span class="badge badge-danger">Over-issued +16</span></td>
+                    </tr>
+                    <tr>
+                        <td class="mono">V2601010C04</td>
+                        <td style="text-align:right">15</td>
+                        <td style="text-align:right;color:var(--danger);font-weight:700">0</td>
+                        <td><span class="badge badge-warning">Zero issued</span></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight:800;border-top:2px solid var(--border)">
+                        <td>T&#7892;NG BOM</td>
+                        <td style="text-align:right">18</td>
+                        <td style="text-align:right">19</td>
+                        <td><span class="badge badge-success">T&#7893;ng &#273;&#250;ng</span></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-top:0.5rem">
+            T&#7893;ng BOM kh&#7899;p (19 &ge; 18). Nh&#432;ng VPO C03 nh&#7853;n th&#7915;a, VPO C04 kh&#244;ng nh&#7853;n g&#236;.
+            <br>LP: &#273;&#7911; h&#224;ng. M2: VPO C04 thi&#7871;u 15.
+        </div>
+    </div>
+
+    <div class="callout callout-warning">
+        <strong>Nguy&#234;n nh&#226;n g&#7889;c:</strong>
+        Kho xu&#7845;t nguy&#234;n li&#7879;u cho nhi&#7873;u VPO c&#249;ng l&#250;c nh&#432;ng ch&#7881; ghi nh&#7853;n v&#224;o <strong>m&#7897;t VPO</strong> (th&#432;&#7901;ng l&#224; VPO &#273;&#7847;u ti&#234;n) &#273;&#7875; ti&#7871;t ki&#7879;m th&#7901;i gian nh&#7853;p li&#7879;u.
+        <br><br>
+        T&#7893;ng s&#7889; l&#432;&#7907;ng xu&#7845;t kho &#273;&#250;ng (LP kh&#244;ng b&#7883; &#7843;nh h&#432;&#7903;ng), nh&#432;ng ph&#226;n b&#7893; per VPO sai (M2 b&#7883; &#7843;nh h&#432;&#7903;ng v&#236; t&#237;nh &#7903; m&#7913;c VPO).
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 6. COUNTERMEASURES (A3 Box 5-6)                        -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="actions">
+    <div class="section-label">A3-5/6 &middot; Bi&#7879;n ph&#225;p &amp; Theo d&#245;i</div>
+    <div class="section-title">H&#224;nh &#273;&#7897;ng kh&#7855;c ph&#7909;c</div>
+    <div class="section-subtitle">3 nh&#243;m gi&#7843;i ph&#225;p cho 2 case study v&#224; gi&#225;m s&#225;t li&#234;n t&#7909;c</div>
+    <div class="divider"></div>
+
+    <div class="action-grid">
+        <div class="action-card" style="border-top:3px solid var(--danger)">
+            <h4>
+                <span class="action-number" style="background:var(--danger-bg);color:var(--danger)">1</span>
+                <span style="color:var(--danger)">PO qu&#225; h&#7841;n</span>
+            </h4>
+            <p style="font-size:0.9rem;line-height:1.6">
+                Y&#234;u c&#7847;u kho <strong>nh&#7853;p PO v&#224;o U8 trong v&#242;ng 24h</strong> sau khi nh&#7853;n h&#224;ng th&#7921;c t&#7871;.
+                <br>Quy t&#7855;c: "Nh&#7853;n h&#224;ng = Nh&#7853;p U8 ngay".
+            </p>
+        </div>
+        <div class="action-card" style="border-top:3px solid var(--warning)">
+            <h4>
+                <span class="action-number" style="background:var(--warning-bg);color:var(--warning)">2</span>
+                <span style="color:var(--warning)">Issuance g&#7897;p</span>
+            </h4>
+            <p style="font-size:0.9rem;line-height:1.6">
+                <strong>Ng&#7855;n h&#7841;n:</strong> Kho t&#225;ch s&#7889; l&#432;&#7907;ng xu&#7845;t theo t&#7915;ng VPO.
+                <br><strong>D&#224;i h&#7841;n:</strong> H&#7879; th&#7889;ng d&#249;ng BOM-level aggregation l&#224;m backup check.
+            </p>
+        </div>
+        <div class="action-card" style="border-top:3px solid var(--info)">
+            <h4>
+                <span class="action-number" style="background:var(--info-bg);color:var(--info)">3</span>
+                <span style="color:var(--info)">Gi&#225;m s&#225;t</span>
+            </h4>
+            <p style="font-size:0.9rem;line-height:1.6">
+                C&#7843;nh b&#225;o khi <strong>M2 shortage &#8800; LP shortage</strong> v&#432;&#7907;t ng&#432;&#7905;ng.
+                <br>BOM_SHORTAGE_STATUS flag: OK / MISMATCH / MISSING_DATA.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 7. GLOSSARY                                            -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="glossary">
+    <div class="section-label">Tham kh&#7843;o</div>
+    <div class="section-title">Thu&#7853;t ng&#7919;</div>
+    <div class="divider"></div>
+    <div class="glossary-grid">
+        <div class="glossary-item"><span class="glossary-term">FIFO</span><span>First In, First Out &mdash; V&#224;o tr&#432;&#7899;c, Ra tr&#432;&#7899;c.</span></div>
+        <div class="glossary-item"><span class="glossary-term">BOM</span><span>Bill of Materials &mdash; &#272;&#7883;nh m&#7913;c nguy&#234;n li&#7879;u.</span></div>
+        <div class="glossary-item"><span class="glossary-term">VPO</span><span>Virtual Production Order &mdash; &#272;&#417;n s&#7843;n xu&#7845;t n&#7897;i b&#7897;.</span></div>
+        <div class="glossary-item"><span class="glossary-term">PO</span><span>Purchase Order &mdash; &#272;&#417;n mua h&#224;ng t&#7915; nh&#224; cung c&#7845;p.</span></div>
+        <div class="glossary-item"><span class="glossary-term">ETA</span><span>Estimated Time of Arrival &mdash; Ng&#224;y d&#7921; ki&#7871;n h&#224;ng &#273;&#7871;n.</span></div>
+        <div class="glossary-item"><span class="glossary-term">Shortage</span><span>Thi&#7871;u h&#7909;t &mdash; Nhu c&#7847;u v&#432;&#7907;t ngu&#7891;n cung.</span></div>
+        <div class="glossary-item"><span class="glossary-term">Tolerance</span><span>% hao h&#7909;t cho ph&#233;p, c&#7897;ng th&#234;m v&#224;o nhu c&#7847;u.</span></div>
+        <div class="glossary-item"><span class="glossary-term">Issuance</span><span>Xu&#7845;t kho &mdash; Nguy&#234;n li&#7879;u &#273;&#227; c&#7845;p cho s&#7843;n xu&#7845;t.</span></div>
+        <div class="glossary-item"><span class="glossary-term">Double-Count</span><span>T&#237;nh tr&#249;ng &mdash; PO &#273;&#227; &#273;&#7871;n kho v&#7851;n b&#7883; t&#237;nh l&#224; "&#273;ang &#273;i".</span></div>
+        <div class="glossary-item"><span class="glossary-term">M2 Engine</span><span>FIFO Matching Engine trong BigQuery.</span></div>
+        <div class="glossary-item"><span class="glossary-term">LP</span><span>Lead Plan &mdash; B&#7843;ng t&#237;nh Google Sheets c&#7911;a &#273;&#7897;i mua.</span></div>
+        <div class="glossary-item"><span class="glossary-term">A3</span><span>Ph&#432;&#417;ng ph&#225;p gi&#7843;i quy&#7871;t v&#7845;n &#273;&#7873; c&#7911;a Toyota.</span></div>
+        <div class="glossary-item"><span class="glossary-term">SNAPSHOT</span><span>S&#7889; li&#7879;u t&#7891;n kho ch&#7889;t v&#224;o th&#7913; Hai h&#224;ng tu&#7847;n.</span></div>
+        <div class="glossary-item"><span class="glossary-term">BOM Consumption</span><span>S&#7889; l&#432;&#7907;ng NL c&#7847;n cho 1 &#273;&#417;n v&#7883; th&#224;nh ph&#7849;m.</span></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:3rem 0;color:var(--text-light);font-size:0.8rem;border-top:1px solid var(--border)">
+    <div style="font-weight:700;color:var(--secondary);margin-bottom:0.5rem">ISC Supply Chain Management System</div>
+    <div>FIFO Matching Engine Report &middot; A3 Problem Solving &middot; Version 2.0</div>
+    <div style="margin-top:0.25rem">D&#7919; li&#7879;u t&#7915; Ngan_Assign_Sourcing session &middot; Review b&#7903;i Nam Ho &middot; 30 Mar 2026</div>
+</footer>
+
+</div><!-- /container -->
+
+<!-- JAVASCRIPT -->
+<script>
+(function() {
+    'use strict';
+    // Collapsible sections
+    window.toggleCollapse = function(header) {
+        header.classList.toggle('collapsed');
+        var body = header.nextElementSibling;
+        body.classList.toggle('collapsed');
+    };
+    // Sticky nav active state
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav-link');
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                navLinks.forEach(function(link) {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                });
+            }
+        });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(function(s) { observer.observe(s); });
+})();
+</script>
+</body>
+</html>
