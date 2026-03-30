@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISC Data Team | BigQuery Onboarding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Spreadsheet Simulation Styles */
+        .data-grid { display: grid; grid-template-columns: 40px repeat(3, 1fr); gap: 1px; background-color: #e2e8f0; border: 1px solid #cbd5e1; }
+        .data-cell { background-color: white; padding: 8px 12px; font-size: 0.85rem; display: flex; items-center; }
+        .data-header { background-color: #f8fafc; font-weight: 600; color: #475569; justify-content: center; }
+        .data-row-num { background-color: #f8fafc; font-weight: 600; color: #64748b; justify-content: center; }
+        
+        /* Happy/Unhappy Path Styles */
+        .unhappy-merged { grid-column: span 3; text-align: center; }
+        .unhappy-header { background-color: #fef2f2; } 
+        .unhappy-data-red { color: #dc2626; font-weight: 600; }
+        .unhappy-data-bold { font-weight: 700; }
+        .happy-header { background-color: #ecfdf5; color: #065f46; }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(to right, #2563eb, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <nav class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-2 rounded-lg shadow-lg shadow-blue-500/20">
+                        <i class="fa-solid fa-database text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-slate-900 leading-tight">ISC Data Hub</span>
+                        <span class="block text-xs text-slate-500 font-medium uppercase tracking-wider">Training Module</span>
+                    </div>
+                </div>
+                <div class="flex space-x-2 bg-slate-100 p-1 rounded-lg">
+                    <button onclick="switchTab('home')" id="tab-home" class="px-4 py-2 rounded-md text-sm font-semibold bg-white text-blue-700 shadow-sm transition-all">1. Prep Data</button>
+                    <button onclick="switchTab('setup')" id="tab-setup" class="px-4 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-900 transition-all">2. Setup Project</button>
+                    <button onclick="switchTab('upload')" id="tab-upload" class="px-4 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-900 transition-all">3. Upload Tools</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20">
+
+        <div id="page-home" class="animate-fade-in space-y-16">
+            
+            <div class="relative bg-slate-900 rounded-3xl overflow-hidden p-10 md:p-16 text-white shadow-2xl shadow-blue-900/20">
+                <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-100 text-xs font-bold uppercase tracking-wide mb-6">
+                        <i class="fa-solid fa-rocket"></i> Phase 1: Preparation
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+                        Great Analysis Starts with <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">Clean Data.</span>
+                    </h1>
+                    <p class="text-lg text-slate-300 mb-8 leading-relaxed">
+                        BigQuery is powerful, but it's strictly logical. It doesn't understand "colors" or "merged cells." 
+                        Follow these protocols to transform your Google Sheets into analytics-ready datasets.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#checklist" class="bg-white text-slate-900 px-6 py-3 rounded-lg font-bold hover:bg-blue-50 transition flex items-center gap-2">
+                            Start Checklist <i class="fa-solid fa-arrow-down"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="checklist">
+                <h2 class="text-3xl font-bold mb-8 text-slate-900">The "Happy" vs. "Unhappy" Data Path</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-red-600 font-bold text-lg">
+                            <i class="fa-solid fa-circle-xmark"></i> "Unhappy Path": Your Raw Google Sheet
+                        </div>
+                        <div class="bg-white rounded-xl shadow-lg border-2 border-red-500 overflow-hidden relative">
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                                <div class="bg-red-600/10 border-4 border-red-600 text-red-600 font-black text-4xl uppercase -rotate-12 px-8 py-4 rounded-xl">WILL FAIL</div>
+                            </div>
+                            <div class="data-grid opacity-70 grayscale-[30%]">
+                                <div class="data-header"></div><div class="data-header unhappy-header">A</div><div class="data-header unhappy-header">B</div><div class="data-header unhappy-header">C</div>
+                                <div class="data-row-num">1</div>
+                                <div class="data-cell font-bold unhappy-merged bg-red-50" style="grid-column: span 3;">ISC Q3 2024 Sales</div>
+                                <div class="data-row-num">2</div>
+                                <div class="data-cell unhappy-header font-bold">Ngày bán</div><div class="data-cell unhappy-header font-bold">Tên khách</div><div class="data-cell unhappy-header font-bold">Tổng tiền ($)</div>
+                                <div class="data-row-num">3</div>
+                                <div class="data-cell">25/09/2024</div><div class="data-cell">Nguyễn Thị An</div><div class="data-cell unhappy-data-red unhappy-data-bold">$1.250.000</div>
+                                <div class="data-row-num">4</div>
+                                <div class="data-cell">26/09/2024</div><div class="data-cell">Trần Văn Bình</div><div class="data-cell unhappy-data-red">$450.500</div>
+                                <div class="data-row-num">5</div>
+                                <div class="data-cell">27/09/2024</div><div class="data-cell"></div><div class="data-cell"></div>
+                                <div class="data-row-num">6</div>
+                                <div class="data-cell font-bold unhappy-merged bg-red-50" style="grid-column: span 2;">TOTAL</div><div class="data-cell font-bold unhappy-merged bg-red-50">$1.700.500</div>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-sm text-red-700/80 list-disc list-inside bg-red-50 p-4 rounded-lg">
+                            <li>Row 1 is a **title** (merged), not actual data headers.</li>
+                            <li>Headers are in **Vietnamese** and contain spaces/symbols (`Ngày bán`, `Tổng tiền ($)`).</li>
+                            <li>Dates are in **DD/MM/YYYY** format.</li>
+                            <li>Amounts contain **currency symbols** and **thousands separators**.</li>
+                            <li>Row 5 has **missing values**.</li>
+                            <li>Row 6 is a **summary row** (merged) that breaks the data structure.</li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 text-green-600 font-bold text-lg">
+                            <i class="fa-solid fa-circle-check"></i> "Happy Path": BigQuery-Ready Sheet
+                        </div>
+                        <div class="bg-white rounded-xl shadow-lg border-2 border-green-500 overflow-hidden">
+                            <div class="data-grid">
+                                <div class="data-header"></div><div class="data-header happy-header">A</div><div class="data-header happy-header">B</div><div class="data-header happy-header">C</div>
+                                <div class="data-row-num">1</div>
+                                <div class="data-cell happy-header font-bold">order_date</div><div class="data-cell happy-header font-bold">customer_name</div><div class="data-cell happy-header font-bold">total_amount_vnd</div>
+                                <div class="data-row-num">2</div>
+                                <div class="data-cell">2024-09-25</div><div class="data-cell">Nguyen Thi An</div><div class="data-cell">1250000</div>
+                                <div class="data-row-num">3</div>
+                                <div class="data-cell">2024-09-26</div><div class="data-cell">Tran Van Binh</div><div class="data-cell">450500</div>
+                                <div class="data-row-num">4</div>
+                                <div class="data-cell">2024-09-27</div><div class="data-cell">Le Thanh Cuong</div><div class="data-cell">900000</div>
+                                <div class="data-row-num">5</div>
+                                <div class="data-cell">2024-09-28</div><div class="data-cell">Pham Thi Dao</div><div class="data-cell">150000</div>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-sm text-green-800 list-disc list-inside bg-green-50 p-4 rounded-lg">
+                            <li>Row 1 contains **only** clean, English headers (<code>order_date</code>).</li>
+                            <li>Dates are in **YYYY-MM-DD** (ISO) format.</li>
+                            <li>Amounts are **raw numbers** (no symbols, no separators).</li>
+                            <li>Every row contains **actual data**, no summary rows.</li>
+                            <li>**No merged cells** anywhere.</li>
+                            <li>Vietnamese names are fine, as long as the file is UTF-8 (Google Sheets default).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-3xl font-bold mb-8 text-slate-900">Data Engineer's "Pro Tips"</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition group">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fa-regular fa-calendar-days text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 mb-2">The Date Format Trap</h3>
+                        <p class="text-sm text-slate-600 mb-3">BigQuery is strict about dates. It prefers <strong>YYYY-MM-DD</strong>.</p>
+                        <div class="bg-slate-100 p-2 rounded text-xs font-mono text-slate-700">
+                            ❌ 25/09/2025 (DD/MM/YYYY)<br>
+                            ❌ September 25, 2025<br>
+                            ✅ 2025-09-25
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition group">
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-ghost text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 mb-2">Beware "Ghost" Spaces</h3>
+                        <p class="text-sm text-slate-600 mb-3">"Stationery " is not the same as "Stationery". Trailing spaces break database joins.</p>
+                        <div class="bg-slate-100 p-2 rounded text-xs font-mono text-slate-700">
+                            <span class="font-bold">Tip:</span> Use <code class="font-mono">=TRIM(A1)</code> in Sheets to clean text columns before uploading.
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition group">
+                        <div class="w-12 h-12 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-paintbrush text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 mb-2">Colors & Styles Don't Upload</h3>
+                        <p class="text-sm text-slate-600 mb-3">Highlighting a cell Red or Bold does <strong>not</strong> transfer to BigQuery. It only cares about the raw value.</p>
+                        <div class="bg-slate-100 p-2 rounded text-xs font-mono text-slate-700">
+                            If a product is "Urgent", add a column named "status" and type "urgent" in it.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-900 rounded-2xl p-8 md:p-12 text-white">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="md:w-1/2">
+                        <h2 class="text-3xl font-bold mb-4">Ready to proceed?</h2>
+                        <p class="text-blue-200 mb-6">Before moving to setup, ensure your Google Sheet adheres to the "Happy Path" format.</p>
+                        <button onclick="switchTab('setup')" class="bg-white text-blue-900 hover:bg-blue-50 font-bold py-3 px-8 rounded-lg shadow-lg transition flex items-center gap-2">
+                            Yes, My Data is Clean <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="md:w-1/2 bg-white/10 rounded-xl p-6 backdrop-blur-sm border border-white/10">
+                        <h3 class="font-bold mb-4 uppercase tracking-wider text-sm text-blue-200">Final Sanity Check</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-400"></i> Row 1 contains only **English, snake_case headers**.
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-400"></i> **No merged cells** anywhere in the data range.
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-400"></i> Dates are in **YYYY-MM-DD** format.
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check text-green-400"></i> Numbers are **raw values** (no currency/symbols).
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-setup" class="hidden space-y-16 animate-fade-in">
+            <div class="relative bg-slate-900 rounded-3xl overflow-hidden p-10 md:p-16 text-white shadow-2xl shadow-blue-900/20">
+                <div class="absolute top-0 left-0 -mt-20 -ml-20 w-80 h-80 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-100 text-xs font-bold uppercase tracking-wide mb-6">
+                        <i class="fa-solid fa-building"></i> Phase 2: Infrastructure
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+                        Create Your Team's <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">Data Home.</span>
+                    </h1>
+                    <p class="text-lg text-slate-300 mb-8 leading-relaxed">
+                        Before we upload, we need a place to store the files. Think of this like creating a shared folder on a server, but with super-powers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center relative">
+                    <div class="text-6xl text-slate-200 absolute top-4 right-4 opacity-50"><i class="fa-solid fa-building"></i></div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-2">Level 1</h3>
+                    <div class="text-2xl font-bold text-slate-900 mb-2">Google Cloud Project</div>
+                    <div class="bg-slate-100 rounded px-3 py-1 text-sm font-mono text-slate-600 inline-block mb-4">isc-data-platform</div>
+                    <p class="text-slate-500 text-sm">This is the "Office Building". We all work inside this one project.</p>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-xl border-2 border-blue-500 shadow-md text-center relative transform md:-translate-y-4">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">YOU ARE HERE</div>
+                    <div class="text-6xl text-blue-200 absolute top-4 right-4 opacity-50"><i class="fa-solid fa-folder-open"></i></div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-blue-600 mb-2">Level 2</h3>
+                    <div class="text-2xl font-bold text-slate-900 mb-2">Dataset</div>
+                    <div class="bg-white border border-blue-200 rounded px-3 py-1 text-sm font-mono text-blue-700 inline-block mb-4">marketing_analytics</div>
+                    <p class="text-blue-800 text-sm">This is your team's "Filing Cabinet". You own this space.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center relative">
+                    <div class="text-6xl text-slate-200 absolute top-4 right-4 opacity-50"><i class="fa-solid fa-table"></i></div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-2">Level 3</h3>
+                    <div class="text-2xl font-bold text-slate-900 mb-2">Table</div>
+                    <div class="bg-slate-100 rounded px-3 py-1 text-sm font-mono text-slate-600 inline-block mb-4">q3_sales_2025</div>
+                    <p class="text-slate-500 text-sm">This is the specific "Document". This holds the rows and columns.</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <h2 class="text-3xl font-bold text-slate-900 border-b pb-4">How to Create Your Dataset</h2>
+                
+                <div class="flex gap-6">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">1</div>
+                    <div class="space-y-3 flex-1">
+                        <h3 class="text-xl font-bold text-slate-900">Go to BigQuery Console</h3>
+                        <p class="text-slate-600">Open the link below. Make sure you are logged in with your ISC email.</p>
+                        <a href="https://console.cloud.google.com/bigquery" target="_blank" class="inline-flex items-center gap-2 text-blue-600 font-bold hover:underline">
+                            Open BigQuery Console <i class="fa-solid fa-external-link-alt text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex gap-6">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">2</div>
+                    <div class="space-y-3 flex-1">
+                        <h3 class="text-xl font-bold text-slate-900">Locate our Project</h3>
+                        <p class="text-slate-600">In the top blue bar, click the project dropdown. Ensure you have selected <strong class="bg-slate-100 px-2 py-1 rounded text-slate-800">isc-data-platform</strong> (or your assigned project).</p>
+                        <div class="bg-amber-50 border-l-4 border-amber-400 p-4 text-sm text-amber-800">
+                            <i class="fa-solid fa-triangle-exclamation mr-2"></i> <strong>Warning:</strong> If you select the wrong project, you won't see your data later!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-6">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">3</div>
+                    <div class="space-y-3 flex-1">
+                        <h3 class="text-xl font-bold text-slate-900">Create the Dataset</h3>
+                        <p class="text-slate-600">On the left side "Explorer" pane:</p>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-700 ml-2">
+                            <li>Click the <strong>three dots</strong> <i class="fa-solid fa-ellipsis-vertical px-1"></i> next to the project name.</li>
+                            <li>Select <strong>Create dataset</strong>.</li>
+                            <li>A panel will slide out from the right.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">The "Dataset ID" Rule</h2>
+                <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">This is the most critical step. If you name your dataset with spaces or capitals, the automated scripts will fail.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-red-500">
+                        <h3 class="text-red-600 font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-circle-xmark"></i> The Unhappy Path</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-red-50 rounded border border-red-100">
+                                <span class="font-mono text-red-800">Marketing Data</span>
+                                <span class="text-xs font-bold text-red-600">HAS SPACES</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-red-50 rounded border border-red-100">
+                                <span class="font-mono text-red-800">Sales-2025</span>
+                                <span class="text-xs font-bold text-red-600">HAS HYPHENS</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-red-50 rounded border border-red-100">
+                                <span class="font-mono text-red-800">HR & Admin</span>
+                                <span class="text-xs font-bold text-red-600">HAS SYMBOLS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-green-500">
+                        <h3 class="text-green-600 font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-circle-check"></i> The Happy Path</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-green-50 rounded border border-green-100">
+                                <span class="font-mono text-green-800">marketing_data</span>
+                                <span class="text-xs font-bold text-green-600">PERFECT</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-green-50 rounded border border-green-100">
+                                <span class="font-mono text-green-800">sales_2025</span>
+                                <span class="text-xs font-bold text-green-600">PERFECT</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-green-50 rounded border border-green-100">
+                                <span class="font-mono text-green-800">hr_and_admin</span>
+                                <span class="text-xs font-bold text-green-600">PERFECT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-indigo-50 p-6 rounded-xl flex gap-4">
+                    <div class="text-indigo-600 text-2xl"><i class="fa-solid fa-globe"></i></div>
+                    <div>
+                        <h4 class="font-bold text-indigo-900">Location Settings</h4>
+                        <p class="text-sm text-indigo-800 mt-1">Leave "Data Location" as <strong>Default (US)</strong> unless instructed otherwise. This makes it easier to join your data with public marketing datasets later.</p>
+                    </div>
+                </div>
+                <div class="bg-teal-50 p-6 rounded-xl flex gap-4">
+                    <div class="text-teal-600 text-2xl"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div>
+                        <h4 class="font-bold text-teal-900">Table Expiration</h4>
+                        <p class="text-sm text-teal-800 mt-1">Ensure "Enable table expiration" is <strong>UNCHECKED</strong>. We don't want your historical data to automatically delete itself after 60 days!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-white">
+                <div>
+                    <h2 class="text-2xl font-bold">Dataset Created?</h2>
+                    <p class="text-slate-400">Once you see your folder in the Explorer pane, you are ready for the magic.</p>
+                </div>
+                <button onclick="switchTab('upload')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:-translate-y-1 flex items-center gap-2">
+                    Get the Upload Code <i class="fa-solid fa-code"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="page-upload" class="hidden space-y-16 animate-fade-in">
+
+            <div class="relative bg-slate-900 rounded-3xl overflow-hidden p-10 md:p-16 text-white shadow-2xl shadow-blue-900/20">
+                <div class="absolute bottom-0 right-0 -mb-20 -mr-20 w-96 h-96 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-100 text-xs font-bold uppercase tracking-wide mb-6">
+                        <i class="fa-solid fa-code"></i> Phase 3: Automation
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+                        The Magic Button: <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Sheets to BigQuery.</span>
+                    </h1>
+                    <p class="text-lg text-slate-300 mb-8 leading-relaxed">
+                        We don't manually download CSVs at ISC. We use a custom script that connects your sheet directly to the database.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-slate-400">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <i class="fa-brands fa-google-drive text-2xl text-green-600"></i>
+                    <span class="font-bold text-slate-700">Google Sheet</span>
+                </div>
+                <i class="fa-solid fa-arrow-right animate-pulse text-slate-300"></i>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-sm flex items-center gap-3 text-white">
+                    <i class="fa-solid fa-robot text-2xl text-emerald-400"></i>
+                    <span class="font-bold">ISC Script</span>
+                </div>
+                <i class="fa-solid fa-arrow-right animate-pulse text-slate-300"></i>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <i class="fa-solid fa-database text-2xl text-blue-600"></i>
+                    <span class="font-bold text-slate-700">BigQuery</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="lg:col-span-1 space-y-8">
+                    <h3 class="text-2xl font-bold text-slate-900">Installation Guide</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-600">1</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Open Script Editor</h4>
+                                <p class="text-sm text-slate-500 mt-1">In your Google Sheet, go to <br><code class="bg-slate-100 px-1">Extensions > Apps Script</code>.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-600">2</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Add "BigQuery API"</h4>
+                                <p class="text-sm text-slate-500 mt-1"><strong>CRITICAL STEP:</strong> Click the <strong class="text-blue-600">+</strong> next to "Services" on the left. Search for "BigQuery API" and click Add.</p>
+                                <div class="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-xs text-red-700">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> If you skip this, the script will crash immediately.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-600">3</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Paste the Code</h4>
+                                <p class="text-sm text-slate-500 mt-1">Delete any code currently there. Copy the code block on the right and paste it in.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-600">4</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">Configure & Run</h4>
+                                <p class="text-sm text-slate-500 mt-1">Change the <code class="text-emerald-600">PROJECT_ID</code> and <code class="text-emerald-600">DATASET_ID</code> at the top of the code. Then click "Save" and "Run".</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div class="bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-700">
+                        <div class="flex justify-between items-center px-4 py-2 bg-slate-900 border-b border-slate-700">
+                            <span class="text-xs font-mono text-slate-400">Code.gs</span>
+                            <button onclick="copyCode()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded transition flex items-center gap-2">
+                                <i class="fa-regular fa-copy"></i> Copy Code
+                            </button>
+                        </div>
+                        <div class="p-4 overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed text-slate-300" id="script-code">
+<span class="text-slate-500">// ==========================================</span>
+<span class="text-slate-500">// ISC DATA TEAM - AUTOMATED UPLOADER v2.0 (Robust)</span>
+<span class="text-slate-500">// ==========================================</span>
+
+<span class="text-purple-400">function</span> <span class="text-blue-400">onOpen</span>() {
+  <span class="text-slate-500">// Adds a custom menu to your Google Sheet</span>
+  SpreadsheetApp.getUi()
+    .createMenu(<span class="text-green-400">'🚀 ISC BigQuery Tools'</span>)
+    .addItem(<span class="text-green-400">'Upload Current Sheet'</span>, <span class="text-green-400">'uploadToBigQuery'</span>)
+    .addToUi();
+}
+
+<span class="text-purple-400">function</span> <span class="text-blue-400">uploadToBigQuery</span>() {
+  <span class="text-slate-500">// --- CONFIGURATION (EDIT THIS SECTION ONLY) ---</span>
+  <span class="text-purple-400">const</span> <span class="text-yellow-300">PROJECT_ID</span> = <span class="text-green-400">'isc-data-platform'</span>; <span class="text-slate-500">// Your Project ID</span>
+  <span class="text-purple-400">const</span> <span class="text-yellow-300">DATASET_ID</span> = <span class="text-green-400">'marketing_analytics'</span>; <span class="text-slate-500">// Your Dataset ID</span>
+  <span class="text-slate-500">// --------------------------------------------</span>
+
+  <span class="text-purple-400">const</span> sheet = SpreadsheetApp.getActiveSheet();
+  <span class="text-purple-400">const</span> data = sheet.getDataRange().getValues();
+  
+  <span class="text-slate-500">// 1. Create Table Name from Sheet Name (Clean it up)</span>
+  <span class="text-purple-400">let</span> tableName = sheet.getName().toLowerCase().replace(<span class="text-blue-400">/[^a-z0-9]/g</span>, <span class="text-green-400">"_"</span>);
+  
+  <span class="text-slate-500">// 2. Prepare Data (Headers + Rows)</span>
+  <span class="text-purple-400">const</span> headers = data[0];
+  <span class="text-purple-400">const</span> rows = data.slice(1);
+  
+  <span class="text-purple-400">if</span> (rows.length === 0) {
+    Browser.msgBox(<span class="text-red-400">"❌ Error: Sheet is empty (no data rows)."</span>);
+    <span class="text-purple-400">return</span>;
+  }
+
+  <span class="text-slate-500">// 3. Create Schema (Safest Mode: All Fields = STRING)</span>
+  <span class="text-purple-400">const</span> schema = headers.map(header => ({
+    name: header.toLowerCase().replace(<span class="text-blue-400">/\s+/g</span>, <span class="text-green-400">"_"</span>),
+    type: <span class="text-green-400">'STRING'</span>
+  }));
+
+  <span class="text-slate-500">// 4. Prepare CSV payload (FIXED: Handles commas properly)</span>
+  <span class="text-purple-400">const</span> csvData = rows.map(row => 
+    row.map(cell => {
+      <span class="text-purple-400">let</span> cellStr = cell.toString();
+      <span class="text-slate-500">// If cell has comma, newline, or quote, wrap it in quotes</span>
+      <span class="text-purple-400">if</span> (cellStr.search(<span class="text-blue-400">/[,"\n]/</span>) !== -1) {
+        <span class="text-purple-400">return</span> <span class="text-green-400">'"'</span> + cellStr.replace(<span class="text-blue-400">/"/g</span>, <span class="text-green-400">'""'</span>) + <span class="text-green-400">'"'</span>; 
+      }
+      <span class="text-purple-400">return</span> cellStr;
+    }).join(<span class="text-green-400">","</span>)
+  ).join(<span class="text-green-400">"\n"</span>);
+
+  <span class="text-purple-400">const</span> blob = Utilities.newBlob(csvData, <span class="text-green-400">'application/octet-stream'</span>);
+
+  <span class="text-slate-500">// 5. Configure Job (WRITE_TRUNCATE = Replace table)</span>
+  <span class="text-purple-400">const</span> jobSpec = {
+    configuration: {
+      load: {
+        destinationTable: {
+          projectId: <span class="text-yellow-300">PROJECT_ID</span>,
+          datasetId: <span class="text-yellow-300">DATASET_ID</span>,
+          tableId: tableName
+        },
+        schema: { fields: schema },
+        writeDisposition: <span class="text-green-400">'WRITE_TRUNCATE'</span>, <span class="text-slate-500">// Replaces old data</span>
+        sourceFormat: <span class="text-green-400">'CSV'</span>,
+        allowQuotedNewlines: <span class="text-purple-400">true</span> <span class="text-slate-500">// Allow multiline text</span>
+      }
+    }
+  };
+
+  <span class="text-slate-500">// 6. Send and MONITOR the Job</span>
+  <span class="text-purple-400">try</span> {
+    <span class="text-purple-400">const</span> job = BigQuery.Jobs.insert(jobSpec, <span class="text-yellow-300">PROJECT_ID</span>, blob);
+    <span class="text-purple-400">const</span> jobId = job.jobReference.jobId;
+    
+    <span class="text-slate-500">// --- NEW: WAIT FOR COMPLETION ---</span>
+    <span class="text-purple-400">let</span> status = <span class="text-green-400">'RUNNING'</span>;
+    <span class="text-purple-400">let</span> attempts = 0;
+    
+    <span class="text-purple-400">while</span> (status === <span class="text-green-400">'RUNNING'</span> || status === <span class="text-green-400">'PENDING'</span>) {
+      Utilities.sleep(1000); <span class="text-slate-500">// Wait 1 second</span>
+      <span class="text-purple-400">const</span> checkJob = BigQuery.Jobs.get(<span class="text-yellow-300">PROJECT_ID</span>, jobId);
+      status = checkJob.status.state;
+      
+      <span class="text-purple-400">if</span> (status === <span class="text-green-400">'DONE'</span>) {
+        <span class="text-purple-400">if</span> (checkJob.status.errorResult) {
+          <span class="text-slate-500">// Found a REAL error</span>
+          Browser.msgBox(<span class="text-red-400">"❌ Job Failed: "</span> + checkJob.status.errorResult.message);
+          Logger.log(checkJob.status.errors); 
+        } <span class="text-purple-400">else</span> {
+          <span class="text-slate-500">// Success!</span>
+          Browser.msgBox(<span class="text-green-400">"✅ Success! Data uploaded to table: "</span> + tableName);
+        }
+      }
+      
+      attempts++;
+      <span class="text-purple-400">if</span> (attempts > 20) { 
+         Browser.msgBox(<span class="text-yellow-300">"⚠️ Job is taking too long. Check BigQuery Console."</span>);
+         <span class="text-purple-400">break</span>;
+      }
+    }
+    
+  } <span class="text-purple-400">catch</span> (e) {
+    Browser.msgBox(<span class="text-red-400">"❌ Script Error: "</span> + e.toString());
+  }
+}
+</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-8">
+                <h3 class="text-amber-900 text-xl font-bold mb-4"><i class="fa-solid fa-shield-halved mr-2"></i> Don't Panic! Authorization Steps</h3>
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="md:w-2/3 text-amber-800 text-sm space-y-2">
+                        <p>When you run this script for the first time, Google will show a scary warning saying <strong>"Google hasn't verified this app"</strong>.</p>
+                        <p>This is normal because <em>you</em> created the script, not Google. It is safe.</p>
+                        <p class="font-bold mt-4">How to bypass it:</p>
+                        <ol class="list-decimal list-inside ml-2 space-y-1">
+                            <li>Click <strong>Review Permissions</strong> and select your ISC email.</li>
+                            <li>On the warning screen, click the small text <strong>"Advanced"</strong> in the bottom left.</li>
+                            <li>Click <strong>"Go to Untitled Project (unsafe)"</strong> at the very bottom.</li>
+                            <li>Click <strong>Allow</strong>.</li>
+                        </ol>
+                    </div>
+                    <div class="md:w-1/3 bg-white p-4 rounded border border-gray-200 shadow-sm text-center">
+                        <div class="text-xs text-gray-500 mb-2">Look for this link:</div>
+                        <div class="text-blue-600 hover:underline cursor-pointer font-medium text-sm">Go to Untitled Project (unsafe)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Ready to Launch?</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto mb-8">
+                    Once you click "Upload", go back to the BigQuery console. Refresh your dataset. 
+                    You should see your table there, ready for SQL magic.
+                </p>
+                <button onclick="switchTab('home')" class="text-blue-600 font-bold hover:underline">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Start
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm">© 2025 International Stationery Company Limited (ISC) • Data Engineering Team</p>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            ['home', 'setup', 'upload'].forEach(t => {
+                document.getElementById('page-' + t).classList.add('hidden');
+                const btn = document.getElementById('tab-' + t);
+                btn.classList.remove('bg-white', 'text-blue-700', 'shadow-sm', 'font-semibold');
+                btn.classList.add('text-slate-500', 'font-medium');
+            });
+
+            document.getElementById('page-' + tabName).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabName);
+            activeBtn.classList.remove('text-slate-500', 'font-medium');
+            activeBtn.classList.add('bg-white', 'text-blue-700', 'shadow-sm', 'font-semibold');
+            
+            window.scrollTo(0, 0);
+        }
+
+        function copyCode() {
+            const codeText = document.getElementById('script-code').innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                // Optional: You could change the button text momentarily here
+                alert("Code copied to clipboard! Now paste it into Apps Script.");
+            }, (err) => {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
