@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bàn Giao Kỹ Thuật — Anh Hùng IT | ISC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+:root {
+  --bg: #f8f9fb;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f4f8;
+  --bg-input: #f1f5f9;
+  --gold: #b45309;
+  --gold-bright: #d97706;
+  --gold-glow: rgba(180,83,9,0.06);
+  --gold-border: rgba(180,83,9,0.25);
+  --text: #1e293b;
+  --text-body: #475569;
+  --text-muted: #94a3b8;
+  --red: #dc2626;
+  --red-bg: rgba(220,38,38,0.06);
+  --red-border: rgba(220,38,38,0.2);
+  --green: #16a34a;
+  --green-bg: rgba(22,163,74,0.06);
+  --green-border: rgba(22,163,74,0.2);
+  --yellow: #ca8a04;
+  --yellow-bg: rgba(202,138,4,0.06);
+  --yellow-border: rgba(202,138,4,0.2);
+  --blue: #2563eb;
+  --blue-bg: rgba(37,99,235,0.05);
+  --blue-border: rgba(37,99,235,0.2);
+  --cyan: #0e7490;
+  --border: #e2e8f0;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+
+/* === NAV === */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;height:60px;gap:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.nav-brand{font-weight:700;color:var(--gold);font-size:0.9rem;white-space:nowrap}
+.nav-links{display:flex;gap:0.25rem;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.78rem;font-weight:500;padding:0.4rem 0.7rem;border-radius:var(--r-sm);white-space:nowrap;transition:all 0.2s}
+.nav-links a:hover{color:var(--text);background:rgba(0,0,0,0.04)}
+
+/* === LAYOUT === */
+.container{max-width:960px;margin:0 auto;padding:80px 1.5rem 4rem}
+
+/* === HERO === */
+.hero{text-align:center;padding:3rem 0 2rem;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--gold-glow);border:1px solid var(--gold-border);color:var(--gold);font-size:0.8rem;font-weight:600;padding:0.4rem 1rem;border-radius:99px;margin-bottom:1rem}
+.hero h1{font-size:2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem}
+.hero h1 span{color:var(--gold)}
+.hero-sub{color:var(--text-muted);font-size:0.95rem}
+.hero-meta{display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap}
+.hero-meta-item{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--text-body)}
+.hero-meta-item i{color:var(--gold);width:18px;text-align:center}
+
+/* === SECTION === */
+.section{margin-top:3rem}
+.section-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+.section-icon{width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.section-icon.gold{background:var(--gold-glow);color:var(--gold);border:1px solid var(--gold-border)}
+.section-icon.red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.section-icon.green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.section-icon.blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.section-icon.yellow{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border)}
+.section-title{font-size:1.2rem;font-weight:700;letter-spacing:-0.02em}
+
+/* === CARDS === */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;margin-bottom:1rem;transition:border-color 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.card:hover{border-color:var(--gold-border)}
+.card-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.5rem}
+.card-title{font-size:1rem;font-weight:700;margin-bottom:0.25rem}
+.card-value{font-family:var(--mono);font-size:0.85rem;color:var(--gold);background:var(--bg-input);padding:0.3rem 0.6rem;border-radius:var(--r-sm);display:inline-block;word-break:break-all}
+
+/* === INFO GRID === */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.info-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.info-item .label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem}
+.info-item .label i{font-size:0.75rem}
+.info-item .value{font-family:var(--mono);font-size:0.82rem;color:var(--cyan);word-break:break-all}
+.info-item .value a{color:var(--cyan);text-decoration:none}
+.info-item .value a:hover{text-decoration:underline}
+.info-item .note{font-size:0.78rem;color:var(--text-muted);margin-top:0.3rem}
+
+/* === STEPS (Infographic) === */
+.steps{counter-reset:step}
+.step{counter-increment:step;display:flex;gap:1rem;margin-bottom:1rem;position:relative}
+.step::before{content:counter(step);width:36px;height:36px;border-radius:50%;background:var(--gold-glow);border:2px solid var(--gold-bright);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0}
+.step-line{position:absolute;left:17px;top:40px;bottom:-12px;width:2px;background:var(--border)}
+.step:last-child .step-line{display:none}
+.step-content{flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.step-content h4{font-size:0.9rem;font-weight:600;margin-bottom:0.3rem}
+.step-content p,.step-content code{font-size:0.85rem;color:var(--text-body)}
+.step-content code{font-family:var(--mono);color:var(--cyan);background:var(--bg-input);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.8rem}
+.step-content .url{font-family:var(--mono);font-size:0.75rem;color:var(--blue);word-break:break-all;display:block;margin-top:0.3rem}
+
+/* === TABLE === */
+.table-wrap{overflow-x:auto;margin-bottom:1rem;border-radius:var(--r-md);border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,0.04);background:#fff}
+table{width:100%;border-collapse:collapse;font-size:0.82rem}
+th{background:var(--gold-glow);color:var(--gold);font-weight:600;text-align:left;padding:0.7rem 0.8rem;border-bottom:2px solid var(--gold-border);white-space:nowrap;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em}
+td{padding:0.6rem 0.8rem;border-bottom:1px solid var(--border);color:var(--text-body);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,0,0,0.015)}
+td a{color:var(--cyan);text-decoration:none}
+td a:hover{text-decoration:underline}
+td code{font-family:var(--mono);font-size:0.78rem;color:var(--cyan);background:var(--bg-input);padding:0.1rem 0.35rem;border-radius:4px}
+
+/* === STATUS BADGES === */
+.badge{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.75rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:99px}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.badge-yellow{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border)}
+
+/* === ALERT === */
+.alert{border-radius:var(--r-md);padding:1rem 1.25rem;margin-bottom:1rem;display:flex;gap:0.75rem}
+.alert-icon{font-size:1.1rem;flex-shrink:0;margin-top:0.1rem}
+.alert-red{background:var(--red-bg);border:1px solid var(--red-border)}
+.alert-red .alert-icon{color:var(--red)}
+.alert-yellow{background:var(--yellow-bg);border:1px solid var(--yellow-border)}
+.alert-yellow .alert-icon{color:var(--yellow)}
+.alert-body h4{font-size:0.9rem;font-weight:700;margin-bottom:0.25rem}
+.alert-body p{font-size:0.82rem;color:var(--text-body)}
+
+/* === CHECKLIST === */
+.checklist{list-style:none;counter-reset:check}
+.checklist li{counter-increment:check;display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:0.5rem;font-size:0.85rem;transition:border-color 0.2s;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+.checklist li:hover{border-color:var(--gold-border)}
+.checklist li::before{content:'';width:22px;height:22px;border:2px solid var(--text-muted);border-radius:6px;flex-shrink:0;margin-top:0.05rem;transition:all 0.2s}
+.checklist li:hover::before{border-color:var(--gold)}
+.checklist .priority{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-left:auto;padding-left:1rem}
+.checklist .critical{color:var(--red)}
+.checklist .important{color:var(--yellow)}
+
+/* === FLOW DIAGRAM === */
+.flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:1rem}
+.flow-node{text-align:center;padding:0.8rem 1.2rem;border-radius:var(--r-md);font-size:0.8rem;font-weight:600;min-width:120px}
+.flow-node i{display:block;font-size:1.5rem;margin-bottom:0.4rem}
+.flow-node.sheets{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.flow-node.python{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
+.flow-node.bq{background:var(--gold-glow);border:1px solid var(--gold-border);color:var(--gold)}
+.flow-node.looker{background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.3);color:#c084fc}
+.flow-node.appscript{background:var(--yellow-bg);border:1px solid var(--yellow-border);color:var(--yellow)}
+.flow-arrow{color:var(--text-muted);font-size:1.2rem;padding:0 0.5rem}
+
+/* === SCHEDULE TIMELINE === */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:1rem;padding-left:1.5rem}
+.timeline-item::before{content:'';position:absolute;left:-2rem;top:0.45rem;width:16px;height:16px;border-radius:50%;border:2px solid var(--gold);background:#fff}
+.timeline-item.auto::before{background:var(--green);border-color:var(--green)}
+.timeline-item.manual::before{background:var(--yellow);border-color:var(--yellow)}
+.tl-time{font-family:var(--mono);font-size:0.75rem;color:var(--gold);font-weight:600}
+.tl-name{font-weight:600;font-size:0.88rem;margin-top:0.1rem}
+.tl-desc{font-size:0.8rem;color:var(--text-muted)}
+
+/* === MODULE CARDS === */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.module-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;text-align:center;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.module-card:hover{border-color:var(--gold-border);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.module-num{font-size:2rem;font-weight:800;color:var(--gold);line-height:1}
+.module-name{font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.05em}
+.module-title{font-size:0.9rem;font-weight:700;margin-top:0.5rem}
+.module-desc{font-size:0.78rem;color:var(--text-body);margin-top:0.3rem}
+.module-sp{font-family:var(--mono);font-size:0.72rem;color:var(--cyan);margin-top:0.5rem;background:var(--bg-input);padding:0.2rem 0.5rem;border-radius:4px;display:inline-block}
+
+/* === CONTACT CARD === */
+.contact-card{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid var(--gold-border);border-radius:var(--r-xl);padding:2rem;text-align:center;box-shadow:0 2px 8px rgba(180,83,9,0.08)}
+.contact-card .avatar{width:64px;height:64px;border-radius:50%;background:var(--gold-glow);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;color:var(--gold)}
+.contact-card h3{font-size:1.1rem;margin-bottom:0.25rem}
+.contact-card .title{color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem}
+.contact-links{display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap}
+.contact-link{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:var(--r-md);font-size:0.82rem;font-weight:500;text-decoration:none;transition:all 0.2s}
+.contact-link.phone{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.contact-link.email{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
+.contact-link.fb{background:rgba(59,89,152,0.12);border:1px solid rgba(59,89,152,0.3);color:#8b9dc3}
+.contact-link:hover{transform:translateY(-1px)}
+
+/* === CODE BLOCK === */
+.code-block{background:#1e293b;border:1px solid #334155;border-radius:var(--r-md);padding:1rem;font-family:var(--mono);font-size:0.8rem;color:#67e8f9;overflow-x:auto;margin:0.5rem 0 1rem}
+.code-block .comment{color:#94a3b8}
+.code-block .comment{color:var(--text-muted)}
+
+/* === CONFIG TABLE === */
+.config-row{display:grid;grid-template-columns:1fr 1.5fr 1.5fr;gap:0.5rem;margin-bottom:0.5rem}
+.config-row.header{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+.config-key{font-family:var(--mono);font-size:0.8rem;color:var(--yellow);padding:0.5rem;background:var(--bg-card);border-radius:var(--r-sm)}
+.config-old{font-family:var(--mono);font-size:0.78rem;color:var(--red);padding:0.5rem;background:#fef2f2;border:1px solid var(--red-border);border-radius:var(--r-sm);text-decoration:line-through}
+.config-new{font-family:var(--mono);font-size:0.78rem;color:var(--green);padding:0.5rem;background:#f0fdf4;border:1px solid var(--green-border);border-radius:var(--r-sm)}
+
+/* === FOOTER === */
+.footer{text-align:center;padding:2rem 0;margin-top:3rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+.footer a{color:var(--gold-bright);text-decoration:none}
+
+@media(max-width:768px){
+  .container{padding:70px 1rem 3rem}
+  .hero h1{font-size:1.5rem}
+  .flow{flex-direction:column;gap:0.5rem}
+  .flow-arrow{transform:rotate(90deg)}
+  .info-grid{grid-template-columns:1fr}
+  .module-grid{grid-template-columns:1fr 1fr}
+  .config-row{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-brand"><i class="fas fa-server"></i> ISC IT Handover</div>
+    <div class="nav-links">
+        <a href="#credentials">Tài khoản</a>
+        <a href="#systems">Hệ thống</a>
+        <a href="#schedule">Lịch tự động</a>
+        <a href="#architecture">Kiến trúc</a>
+        <a href="#appscript">AppScript</a>
+        <a href="#risks">Cảnh báo</a>
+        <a href="#troubleshoot">Sự cố</a>
+        <a href="#today">Hôm nay</a>
+        <a href="#contact">Liên hệ</a>
+    </div>
+</nav>
+
+<!-- CONTAINER -->
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-badge"><i class="fas fa-handshake"></i> Tài liệu bàn giao chính thức</div>
+    <h1>Bàn Giao Kỹ Thuật<br>cho <span>Anh Hùng</span> (IT Admin)</h1>
+    <p class="hero-sub">Toàn bộ hệ thống, tài khoản, hướng dẫn vận hành & xử lý sự cố</p>
+    <div class="hero-meta">
+        <div class="hero-meta-item"><i class="fas fa-user"></i> Nguyễn Duy Khánh — Senior DE</div>
+        <div class="hero-meta-item"><i class="fas fa-calendar"></i> 30/03/2026</div>
+        <div class="hero-meta-item"><i class="fas fa-headset"></i> Hỗ trợ từ xa: liên tục</div>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 1: CREDENTIALS -->
+<!-- ============================================= -->
+<div class="section" id="credentials">
+    <div class="section-header">
+        <div class="section-icon gold"><i class="fas fa-key"></i></div>
+        <h2 class="section-title">1. Tài Khoản & Quyền Truy Cập</h2>
+    </div>
+
+    <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--gold)"><i class="fab fa-google"></i> Google Cloud Platform (GCP)</h3>
+
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="label"><i class="fas fa-fingerprint"></i> GCP Project ID</div>
+            <div class="value">boxwood-charmer-473204-k8</div>
+            <div class="note">Project Name: "ISC Database"</div>
+        </div>
+        <div class="info-item">
+            <div class="label"><i class="fas fa-database"></i> Dataset chính</div>
+            <div class="value">isc_scm_ops</div>
+            <div class="note">60+ bảng, 58 stored procedures</div>
+        </div>
+        <div class="info-item">
+            <div class="label"><i class="fas fa-link"></i> BigQuery Console</div>
+            <div class="value"><a href="https://console.cloud.google.com/bigquery?project=boxwood-charmer-473204-k8" target="_blank">Mở Console <i class="fas fa-external-link-alt" style="font-size:0.65rem"></i></a></div>
+        </div>
+        <div class="info-item">
+            <div class="label"><i class="fas fa-credit-card"></i> Billing Account</div>
+            <div class="value">01A85D-03A1B6-45B6D6</div>
+            <div class="note">Tổ chức: isconline.vn (ISC, không phải cá nhân) &#10003;</div>
+        </div>
+        <div class="info-item">
+            <div class="label"><i class="fas fa-user-shield"></i> Owner hiện tại</div>
+            <div class="value">dk@isconline.vn</div>
+            <div class="note" style="color:var(--red)">Cần chuyển cho it.hero@isconline.vn HÔM NAY</div>
+        </div>
+        <div class="info-item">
+            <div class="label"><i class="fas fa-robot"></i> Service Accounts</div>
+            <div class="value"><a href="https://console.cloud.google.com/iam-admin/serviceaccounts?project=boxwood-charmer-473204-k8" target="_blank">Kiểm tra tại đây <i class="fas fa-external-link-alt" style="font-size:0.65rem"></i></a></div>
+        </div>
+    </div>
+
+    <!-- IAM TRANSFER STEPS -->
+    <div style="margin-top:1.5rem">
+        <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--red)"><i class="fas fa-exclamation-triangle"></i> Chuyển Quyền GCP — LÀM NGAY HÔM NAY</h3>
+        <div class="steps">
+            <div class="step">
+                <div class="step-line"></div>
+                <div class="step-content">
+                    <h4>Mở trang IAM</h4>
+                    <span class="url"><a href="https://console.cloud.google.com/iam-admin/iam?project=boxwood-charmer-473204-k8" target="_blank">console.cloud.google.com/iam-admin/iam?project=boxwood-charmer-473204-k8</a></span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-line"></div>
+                <div class="step-content">
+                    <h4>Click nút "GRANT ACCESS"</h4>
+                    <p>Nút màu xanh phía trên bảng danh sách (hoặc "CẤP QUYỀN" nếu tiếng Việt)</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-line"></div>
+                <div class="step-content">
+                    <h4>Điền thông tin</h4>
+                    <p><strong>New principals:</strong> <code>it.hero@isconline.vn</code></p>
+                    <p style="margin-top:0.3rem"><strong>Role 1:</strong> <code>Owner</code> (Project &rarr; Owner) &mdash; quyền cao nhất</p>
+                    <p><strong>Role 2:</strong> <code>BigQuery Admin</code> (BigQuery &rarr; BigQuery Admin)</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-line"></div>
+                <div class="step-content">
+                    <h4>Click "SAVE"</h4>
+                    <p>Hùng sẽ xuất hiện trong danh sách IAM ngay lập tức</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-content">
+                    <h4>Kiểm tra &mdash; Hùng chạy thử query</h4>
+                    <p>Hùng đăng nhập <code>it.hero@isconline.vn</code> &rarr; mở BigQuery Console &rarr; chạy:</p>
+                    <div class="code-block">SELECT COUNT(*) FROM `boxwood-charmer-473204-k8.isc_scm_ops.Material_Demand_VIEW`<br><span class="comment">-- Nếu ra số &rarr; thành công &#10003;</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GOOGLE SHEETS -->
+    <h3 style="font-size:0.95rem;margin:1.5rem 0 1rem;color:var(--green)"><i class="fas fa-table"></i> Google Sheets (5 sheets)</h3>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>#</th><th>Sheet</th><th>Chức năng</th><th>Link</th><th>Action</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td><strong>ISC_DigitalizationReport_4PMFriday</strong></td><td>Báo cáo tuần Kent (5W-2H) + AppScript</td><td><a href="https://docs.google.com/spreadsheets/d/1W_F2zwYknKBSDw2yKFi-q3a5sozkyCJ5zCupo4JmwqU/edit?gid=123704342#gid=123704342" target="_blank">Mở <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a></td><td><span class="badge badge-red">Chuyển owner</span></td></tr>
+                <tr><td>2</td><td><strong>ISC_Input_M1_Planning</strong></td><td>Nguồn dữ liệu Module M1 &mdash; Demand Planning</td><td><a href="https://docs.google.com/spreadsheets/d/1NPyHUV6wTHmeuKl-dvMUW0adOSDNlWlL5dpMFxLmCQk/edit?gid=1283095199#gid=1283095199" target="_blank">Mở <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a></td><td><span class="badge badge-red">Chuyển owner</span></td></tr>
+                <tr><td>3</td><td><strong>ISC_Module_M2_Balancing</strong></td><td>Nguồn dữ liệu Module M2 &mdash; Supply-Demand</td><td><a href="https://docs.google.com/spreadsheets/d/1-h_32qqHavmWBUHQAU4PYRrNY3k5yIvo3Ruf5fGYtP4/edit?gid=571918061#gid=571918061" target="_blank">Mở <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a></td><td><span class="badge badge-red">Chuyển owner</span></td></tr>
+                <tr><td>4</td><td><strong>ISC_Module_M3_Procurement</strong></td><td>Nguồn dữ liệu Module M3 &mdash; Mua hàng</td><td><a href="https://docs.google.com/spreadsheets/d/1Yez9gLqOiouNCtjtOO0QRSvEZ2g34Hl7jOYVhMOpQ0Q/edit?gid=309071726#gid=309071726" target="_blank">Mở <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a></td><td><span class="badge badge-red">Chuyển owner</span></td></tr>
+                <tr><td>5</td><td><strong>ISC_Module_M4_Execution</strong></td><td>Nguồn dữ liệu Module M4 &mdash; Delivery &amp; Stock</td><td><a href="https://docs.google.com/spreadsheets/d/1VHN7uOiEuAImISd45rl13_yDUQRbvSQR9yNuyNXQzWs/edit?gid=1292826155#gid=1292826155" target="_blank">Mở <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a></td><td><span class="badge badge-red">Chuyển owner</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- HOW TO TRANSFER SHEET -->
+    <div class="card">
+        <div class="card-label"><i class="fas fa-info-circle"></i> Cách chuyển owner mỗi Sheet</div>
+        <div class="steps">
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Mở Sheet &rarr; Click <strong>"Share"</strong> (Chia sẻ) g&oacute;c phải tr&ecirc;n</p></div></div>
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Th&ecirc;m email <code>it.hero@isconline.vn</code> &rarr; chọn <strong>"Editor"</strong></p></div></div>
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Click biểu tượng &#9881; b&ecirc;n cạnh t&ecirc;n H&ugrave;ng &rarr; chọn <strong>"Make owner"</strong></p></div></div>
+            <div class="step"><div class="step-content"><p>X&aacute;c nhận &rarr; H&ugrave;ng l&agrave; owner mới &#10003;</p></div></div>
+        </div>
+    </div>
+
+    <!-- APPSCRIPT -->
+    <h3 style="font-size:0.95rem;margin:1.5rem 0 1rem;color:var(--yellow)"><i class="fas fa-code"></i> Google AppScript (3 projects)</h3>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>#</th><th>Script</th><th>Vị trí</th><th>Chức năng</th><th>Link</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td><strong>Code.gs V7 + SheetBuilder.gs V7</strong></td><td>Gắn trong ISC_DigitalizationReport</td><td>Tạo báo cáo tuần &rarr; gửi Kent</td><td><a href="https://docs.google.com/spreadsheets/d/1W_F2zwYknKBSDw2yKFi-q3a5sozkyCJ5zCupo4JmwqU/edit" target="_blank">Sheet</a> &rarr; Extensions &rarr; Apps Script</td></tr>
+                <tr><td>2</td><td><strong>ISC_SCM_Core_Lib</strong></td><td>Standalone project</td><td>Thư viện chính SC &mdash; shortage alert + ETL</td><td><a href="https://script.google.com/home/projects/1d76OHEfMVbrgCf3QC_PrqlMGVjVwUuyBe8SbT27JdcKrMUyGHmdWzze3/edit" target="_blank">Mở trực tiếp <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i></a></td></tr>
+                <tr><td>3</td><td><strong>SC Shortage Alerts</strong></td><td>Bound trong Sheets M1-M4</td><td>Tự động cảnh báo thiếu hàng</td><td>Mở từng Sheet M1-M4 &rarr; Extensions &rarr; Apps Script</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- EMAIL -->
+    <h3 style="font-size:0.95rem;margin:1.5rem 0 1rem;color:var(--red)"><i class="fas fa-envelope"></i> Email trong hệ thống</h3>
+
+    <div class="alert alert-red">
+        <div class="alert-icon"><i class="fas fa-exclamation-circle"></i></div>
+        <div class="alert-body">
+            <h4>dk@isconline.vn &mdash; PHẢI đổi trước khi xóa account</h4>
+            <p>Email này đang là STAGING_EMAIL trong AppScript Weekly Report. Nếu IT xóa account mà chưa đổi &rarr; báo cáo tuần gửi vào hư không. Xem chi tiết tại <a href="#appscript" style="color:var(--red)">Mục 5 &darr;</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 2: RUNNING SYSTEMS -->
+<!-- ============================================= -->
+<div class="section" id="systems">
+    <div class="section-header">
+        <div class="section-icon green"><i class="fas fa-server"></i></div>
+        <h2 class="section-title">2. Hệ Thống Đang Chạy</h2>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>#</th><th>Hệ thống</th><th>Vị trí</th><th>Trạng thái</th><th>Tự động?</th><th>Cần người?</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td><strong>BigQuery Data Warehouse</strong></td><td>GCP Console</td><td><span class="badge badge-green">Đang chạy</span></td><td>Scheduled queries</td><td>Không</td></tr>
+                <tr><td>2</td><td><strong>M2 Nightly MRP</strong></td><td>BigQuery Scheduled</td><td><span class="badge badge-green">Đang chạy</span></td><td>4:00 AM mỗi ngày</td><td>Không</td></tr>
+                <tr><td>3</td><td><strong>M4 Stock AutoSync</strong></td><td>BigQuery Scheduled</td><td><span class="badge badge-green">Đang chạy</span></td><td>Mỗi 5 phút</td><td>Không</td></tr>
+                <tr><td>4</td><td><strong>M4 Monday Protocol</strong></td><td>BigQuery Scheduled</td><td><span class="badge badge-green">Đang chạy</span></td><td>Mỗi thứ Hai sáng</td><td>Không</td></tr>
+                <tr><td>5</td><td><strong>SC Shortage Alerts</strong></td><td>AppScript (Sheets)</td><td><span class="badge badge-green">Đang chạy</span></td><td>Event-based</td><td>Không</td></tr>
+                <tr><td>6</td><td><strong>Weekly Report (5W-2H)</strong></td><td>AppScript (Sheet)</td><td><span class="badge badge-yellow">Cần người</span></td><td>Thứ 6, 7:00 AM</td><td><strong>CÓ &mdash; 17 ô input</strong></td></tr>
+                <tr><td>7</td><td><strong>Python ETL</strong></td><td>Khánh hướng dẫn trực tiếp</td><td><span class="badge badge-green">Đang chạy</span></td><td>Theo schedule</td><td>Xem với Khánh</td></tr>
+                <tr><td>8</td><td><strong>Looker Dashboards</strong></td><td>Looker Studio (web)</td><td><span class="badge badge-green">Đang chạy</span></td><td>Auto-refresh</td><td>Không</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="alert alert-yellow">
+        <div class="alert-icon"><i class="fas fa-info-circle"></i></div>
+        <div class="alert-body">
+            <h4>Tóm tắt</h4>
+            <p>7/8 hệ thống tự chạy. Chỉ <strong>Weekly Report</strong> cần người điền nội dung hàng tuần (17 ô input trong tab Weekly_Input).</p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 3: SCHEDULE -->
+<!-- ============================================= -->
+<div class="section" id="schedule">
+    <div class="section-header">
+        <div class="section-icon blue"><i class="fas fa-clock"></i></div>
+        <h2 class="section-title">3. Lịch Tự Động</h2>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-bottom:1rem;font-size:0.8rem">
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green);margin-right:4px"></span> Tự động hoàn toàn</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--yellow);margin-right:4px"></span> Cần người</span>
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-item auto">
+            <div class="tl-time">4:00 AM &mdash; Mỗi ngày</div>
+            <div class="tl-name">M2 Nightly MRP</div>
+            <div class="tl-desc">SP_RUN_MATCHING_ENGINE &mdash; FIFO allocation, cân đối cung-cầu</div>
+        </div>
+        <div class="timeline-item auto">
+            <div class="tl-time">Mỗi 5 phút &mdash; Liên tục</div>
+            <div class="tl-name">M4 Stock AutoSync</div>
+            <div class="tl-desc">Đồng bộ tồn kho real-time</div>
+        </div>
+        <div class="timeline-item auto">
+            <div class="tl-time">Sáng thứ Hai &mdash; Mỗi tuần</div>
+            <div class="tl-name">M4 Monday Stock Protocol</div>
+            <div class="tl-desc">Kiểm tra tồn kho đầu tuần</div>
+        </div>
+        <div class="timeline-item auto">
+            <div class="tl-time">Event-based &mdash; Khi dữ liệu thay đổi</div>
+            <div class="tl-name">M4 Issuance Sync</div>
+            <div class="tl-desc">SP_M4_ISSUANCE_MERGE &mdash; Merge dữ liệu xuất kho</div>
+        </div>
+        <div class="timeline-item auto">
+            <div class="tl-time">Event-based &mdash; Khi dữ liệu thay đổi</div>
+            <div class="tl-name">SC Shortage Alert</div>
+            <div class="tl-desc">Gửi email cảnh báo thiếu hàng &rarr; Purchasing team</div>
+        </div>
+        <div class="timeline-item manual">
+            <div class="tl-time">Thứ 6, 7:00 AM &mdash; Mỗi tuần</div>
+            <div class="tl-name">Weekly Report (5W-2H)</div>
+            <div class="tl-desc">Tạo HTML email &rarr; gửi Kent. CẦN người điền Weekly_Input trước thứ 6.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-label"><i class="fas fa-search"></i> Cách kiểm tra Scheduled Queries trong BigQuery</div>
+        <div class="steps">
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Mở <a href="https://console.cloud.google.com/bigquery?project=boxwood-charmer-473204-k8" target="_blank">BigQuery Console</a></p></div></div>
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Menu trái &rarr; <strong>"Scheduled queries"</strong> (Truy vấn đã lên lịch)</p></div></div>
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Xem danh sách &rarr; mỗi query có trạng thái <span class="badge badge-green">Succeeded</span> hoặc <span class="badge badge-red">Failed</span></p></div></div>
+            <div class="step"><div class="step-content"><p>Nếu "Failed" &rarr; click vào &rarr; xem log lỗi &rarr; gọi Khánh nếu cần</p></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 4: ARCHITECTURE -->
+<!-- ============================================= -->
+<div class="section" id="architecture">
+    <div class="section-header">
+        <div class="section-icon gold"><i class="fas fa-sitemap"></i></div>
+        <h2 class="section-title">4. Kiến Trúc Hệ Thống</h2>
+    </div>
+
+    <!-- FLOW DIAGRAM -->
+    <div class="flow">
+        <div class="flow-node sheets"><i class="fas fa-table"></i>Google Sheets<br><small>5 sheets nguồn</small></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-node python"><i class="fab fa-python"></i>Python ETL<br><small>Validate &middot; Transform</small></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-node bq"><i class="fas fa-database"></i>BigQuery<br><small>60+ bảng &middot; 58 SPs</small></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+            <div class="flow-node looker"><i class="fas fa-chart-bar"></i>Looker Studio<br><small>Dashboards</small></div>
+            <div class="flow-node appscript"><i class="fas fa-bolt"></i>AppScript<br><small>Alerts &middot; Reports</small></div>
+        </div>
+    </div>
+
+    <!-- 4 MODULES -->
+    <h3 style="font-size:0.95rem;margin:1.5rem 0 1rem">4 Module trong BigQuery</h3>
+    <div class="module-grid">
+        <div class="module-card">
+            <div class="module-num">M1</div>
+            <div class="module-name">Oct 2025</div>
+            <div class="module-title">"The Demand Engine"</div>
+            <div class="module-desc">BOM mastering, đồng bộ CS status, phát hiện anomaly</div>
+            <div class="module-sp">18 bảng</div>
+        </div>
+        <div class="module-card">
+            <div class="module-num">M2</div>
+            <div class="module-name">Nov 2025</div>
+            <div class="module-title">"The Brain"</div>
+            <div class="module-desc">FIFO allocation, MRP tự động 4AM</div>
+            <div class="module-sp">SP_RUN_MATCHING_ENGINE</div>
+        </div>
+        <div class="module-card">
+            <div class="module-num">M3</div>
+            <div class="module-name">Dec 2025</div>
+            <div class="module-title">"The Automated Buyer"</div>
+            <div class="module-desc">Gom PR &rarr; PO, mua hàng single-sweep</div>
+            <div class="module-sp">SP_SPLIT_BATCH_GATE</div>
+        </div>
+        <div class="module-card">
+            <div class="module-num">M4</div>
+            <div class="module-name">Jan 2026</div>
+            <div class="module-title">"The Truth Engine"</div>
+            <div class="module-desc">5-stage delivery waterfall, tồn kho real-time</div>
+            <div class="module-sp">SP_M4_ISSUANCE_MERGE</div>
+        </div>
+    </div>
+
+    <!-- ERD -->
+    <h3 style="font-size:0.95rem;margin:1.5rem 0 1rem">ERD Diagrams (Sơ đồ quan hệ bảng)</h3>
+    <div class="info-grid" style="grid-template-columns:repeat(5,1fr)">
+        <a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/cdede40f-baf5-4fa5-be5e-ea58dc589b96/version/v0.1/edit" target="_blank" class="info-item" style="text-align:center;text-decoration:none;cursor:pointer">
+            <div style="font-size:1.5rem;color:var(--cyan)"><i class="fas fa-project-diagram"></i></div>
+            <div style="font-size:0.8rem;color:var(--text);margin-top:0.3rem;font-weight:600">ERD 1</div>
+        </a>
+        <a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/56f7de02-600d-4018-ac6c-3a0f7f328d1b/version/v0.1/edit" target="_blank" class="info-item" style="text-align:center;text-decoration:none;cursor:pointer">
+            <div style="font-size:1.5rem;color:var(--cyan)"><i class="fas fa-project-diagram"></i></div>
+            <div style="font-size:0.8rem;color:var(--text);margin-top:0.3rem;font-weight:600">ERD 2</div>
+        </a>
+        <a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/97158902-ef7c-4b06-b3e6-1283a2e9e56c/version/v0.1/edit" target="_blank" class="info-item" style="text-align:center;text-decoration:none;cursor:pointer">
+            <div style="font-size:1.5rem;color:var(--cyan)"><i class="fas fa-project-diagram"></i></div>
+            <div style="font-size:0.8rem;color:var(--text);margin-top:0.3rem;font-weight:600">ERD 3</div>
+        </a>
+        <a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/e86ac68b-5634-4da8-8ba9-0bf517850664/version/v0.1/edit" target="_blank" class="info-item" style="text-align:center;text-decoration:none;cursor:pointer">
+            <div style="font-size:1.5rem;color:var(--cyan)"><i class="fas fa-project-diagram"></i></div>
+            <div style="font-size:0.8rem;color:var(--text);margin-top:0.3rem;font-weight:600">ERD 4</div>
+        </a>
+        <a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/a83a6752-68ed-437e-a192-292f3be00266/version/v0.1/edit" target="_blank" class="info-item" style="text-align:center;text-decoration:none;cursor:pointer">
+            <div style="font-size:1.5rem;color:var(--cyan)"><i class="fas fa-project-diagram"></i></div>
+            <div style="font-size:0.8rem;color:var(--text);margin-top:0.3rem;font-weight:600">ERD 5</div>
+        </a>
+    </div>
+
+    <!-- KEY TABLES -->
+    <h3 style="font-size:0.95rem;margin:1.5rem 0 1rem">Bảng & View quan trọng nhất</h3>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Tên</th><th>Loại</th><th>Chức năng</th></tr></thead>
+            <tbody>
+                <tr><td><code>Material_Demand_VIEW</code></td><td>View</td><td>Tổng hợp nhu cầu vật liệu &mdash; nguồn chính cho dashboard</td></tr>
+                <tr><td><code>Sourcing_Feed_Aggregated_VIEW</code></td><td>View</td><td>Dữ liệu sourcing đã aggregate</td></tr>
+                <tr><td><code>BOM_Order_List_Draft</code></td><td>Table</td><td>Danh sách order BOM nháp</td></tr>
+                <tr><td><code>BOM_Order_List_Final</code></td><td>Table</td><td>Danh sách order BOM chính thức</td></tr>
+                <tr><td><code>Material_Issuance</code></td><td>Table</td><td>Dữ liệu xuất kho</td></tr>
+                <tr><td><code>PR_Staging</code> / <code>DRAFT_PR</code></td><td>Table</td><td>Staging cho Purchase Request (M3)</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 5: APPSCRIPT GUIDE -->
+<!-- ============================================= -->
+<div class="section" id="appscript">
+    <div class="section-header">
+        <div class="section-icon yellow"><i class="fas fa-code"></i></div>
+        <h2 class="section-title">5. AppScript: Hướng Dẫn Chi Tiết</h2>
+    </div>
+
+    <!-- 5a: Weekly Report -->
+    <div class="card" style="border-color:var(--yellow-border)">
+        <div class="card-label" style="color:var(--yellow)"><i class="fas fa-newspaper"></i> 5a. Weekly Report (5W-2H) &mdash; CẦN HIỂU RÕ</div>
+
+        <p style="font-size:0.85rem;color:var(--text-body);margin-bottom:1rem">Tự động tạo email báo cáo tuần gửi cho Kent mỗi thứ Sáu. <strong>Cần người điền 17 ô input trước đó.</strong></p>
+
+        <!-- Visual flow -->
+        <div class="flow" style="gap:0;padding:1rem">
+            <div class="flow-node" style="background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue);min-width:100px"><i class="fas fa-keyboard"></i>Điền 17 ô<br><small>Weekly_Input</small></div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-node appscript" style="min-width:100px"><i class="fas fa-bolt"></i>AppScript<br><small>Thứ 6 7AM</small></div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-node" style="background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);min-width:100px"><i class="fas fa-envelope"></i>STAGING<br><small>Review gate</small></div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-node" style="background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);min-width:100px"><i class="fas fa-user-tie"></i>Kent<br><small>Nhận báo cáo</small></div>
+        </div>
+
+        <!-- Config changes -->
+        <h4 style="font-size:0.85rem;margin:1rem 0 0.75rem;color:var(--red)"><i class="fas fa-wrench"></i> Config cần thay đổi trong Code.gs</h4>
+
+        <div class="config-row header"><div>Biến</div><div>Giá trị cũ</div><div>Đổi thành</div></div>
+        <div class="config-row"><div class="config-key">STAGING_EMAIL</div><div class="config-old">dk@isconline.vn</div><div class="config-new">it.hero@isconline.vn</div></div>
+        <div class="config-row"><div class="config-key">SEND_TO_KENT</div><div class="config-old">false</div><div class="config-new">true (nếu bỏ review)</div></div>
+        <div class="config-row" style="margin-bottom:1rem"><div class="config-key">KENT_EMAIL</div><div style="font-family:var(--mono);font-size:0.78rem;color:var(--text-muted);padding:0.5rem">kent@isconline.vn</div><div style="font-family:var(--mono);font-size:0.78rem;color:var(--text-muted);padding:0.5rem">Giữ nguyên</div></div>
+
+        <!-- How to edit -->
+        <h4 style="font-size:0.85rem;margin:0.5rem 0 0.75rem"><i class="fas fa-edit"></i> Cách mở và sửa</h4>
+        <div class="steps">
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Mở Sheet <a href="https://docs.google.com/spreadsheets/d/1W_F2zwYknKBSDw2yKFi-q3a5sozkyCJ5zCupo4JmwqU/edit" target="_blank">ISC_DigitalizationReport_4PMFriday</a></p></div></div>
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Menu &rarr; <strong>Extensions</strong> &rarr; <strong>Apps Script</strong></p></div></div>
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>File <code>Code.gs</code> &rarr; tìm dòng <code>STAGING_EMAIL</code> &rarr; đổi email</p></div></div>
+            <div class="step"><div class="step-content"><p>Click <strong>Save</strong> &#128190; &rarr; Done &#10003;</p></div></div>
+        </div>
+
+        <h4 style="font-size:0.85rem;margin:0.5rem 0 0.75rem"><i class="fas fa-clock"></i> Kiểm tra trigger</h4>
+        <div class="steps">
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Apps Script editor &rarr; menu trái &rarr; biểu tượng &#9200; <strong>"Triggers"</strong></p></div></div>
+            <div class="step"><div class="step-line"></div><div class="step-content"><p>Phải có trigger: <code>sendWeeklyReport</code> &rarr; Time-driven &rarr; Friday 7:00 AM</p></div></div>
+            <div class="step"><div class="step-content"><p>Nếu không có &rarr; click <strong>"+ Add Trigger"</strong> &rarr; setup lại</p></div></div>
+        </div>
+    </div>
+
+    <!-- 5b: SC Alert -->
+    <div class="card" style="border-color:var(--green-border)">
+        <div class="card-label" style="color:var(--green)"><i class="fas fa-bell"></i> 5b. SC Shortage Alert &mdash; TỰ CHẠY</div>
+        <p style="font-size:0.85rem;color:var(--text-body);margin-bottom:0.5rem">Khi dữ liệu Supply Chain thay đổi &rarr; tự tính Demand &minus; Stock + PO = Shortage &rarr; gửi email cảnh báo cho team Purchasing.</p>
+        <p style="font-size:0.85rem;color:var(--green);font-weight:600">Không cần làm gì. Tự chạy. Chỉ kiểm tra nếu team Purchasing báo không nhận alert.</p>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.5rem"><strong>Kiểm tra:</strong> Mở <a href="https://script.google.com/home/projects/1d76OHEfMVbrgCf3QC_PrqlMGVjVwUuyBe8SbT27JdcKrMUyGHmdWzze3/edit" target="_blank" style="color:var(--cyan)">ISC_SCM_Core_Lib</a> &rarr; Triggers &rarr; xem active</p>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 6: RISKS -->
+<!-- ============================================= -->
+<div class="section" id="risks">
+    <div class="section-header">
+        <div class="section-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+        <h2 class="section-title">6. Cảnh Báo: Những Gì Sẽ Hỏng</h2>
+    </div>
+
+    <div class="alert alert-red">
+        <div class="alert-icon"><i class="fas fa-bomb"></i></div>
+        <div class="alert-body">
+            <h4>dk@isconline.vn bị xóa trước khi đổi STAGING_EMAIL</h4>
+            <p>Weekly Report gửi vào email không tồn tại &rarr; Kent không nhận báo cáo.<br><strong>Khắc phục:</strong> ĐỔI STAGING_EMAIL HÔM NAY (xem <a href="#appscript" style="color:var(--red)">Mục 5a</a>)</p>
+        </div>
+    </div>
+    <div class="alert alert-red">
+        <div class="alert-icon"><i class="fas fa-lock"></i></div>
+        <div class="alert-body">
+            <h4>GCP Project không có owner khác</h4>
+            <p>Toàn bộ BigQuery, dashboards, ETL ngừng hoạt động.<br><strong>Khắc phục:</strong> THÊM HÙNG LÀM OWNER HÔM NAY (xem <a href="#credentials" style="color:var(--red)">Mục 1</a>)</p>
+        </div>
+    </div>
+    <div class="alert alert-yellow">
+        <div class="alert-icon"><i class="fas fa-user-slash"></i></div>
+        <div class="alert-body">
+            <h4>Không ai điền Weekly_Input</h4>
+            <p>Báo cáo gửi Kent với nội dung trống/cũ. <strong>Khắc phục:</strong> Anh Nam hoặc successor điền mỗi tuần.</p>
+        </div>
+    </div>
+    <div class="alert alert-yellow">
+        <div class="alert-icon"><i class="fas fa-trash-alt"></i></div>
+        <div class="alert-body">
+            <h4>Google Sheets bị xóa</h4>
+            <p>ETL pipeline fail (nhưng BigQuery data vẫn còn). <strong>Khắc phục:</strong> Chuyển owner tất cả Sheets.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 7: TROUBLESHOOTING -->
+<!-- ============================================= -->
+<div class="section" id="troubleshoot">
+    <div class="section-header">
+        <div class="section-icon blue"><i class="fas fa-tools"></i></div>
+        <h2 class="section-title">7. Xử Lý Sự Cố</h2>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th style="width:25%">Vấn đề</th><th style="width:35%">Kiểm tra</th><th style="width:40%">Cách sửa</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Dashboard không cập nhật</strong></td><td>BigQuery Console &rarr; Scheduled queries &rarr; xem FAILED</td><td>Click query failed &rarr; xem log &rarr; gọi Khánh</td></tr>
+                <tr><td><strong>SC Alert không gửi</strong></td><td>Sheet &rarr; Extensions &rarr; Apps Script &rarr; Triggers</td><td>Trigger bị disabled &rarr; Enable lại</td></tr>
+                <tr><td><strong>Weekly Report không gửi</strong></td><td>(1) STAGING_EMAIL đúng? (2) Trigger active?</td><td>Đổi STAGING_EMAIL + kiểm tra trigger</td></tr>
+                <tr><td><strong>ETL pipeline fail</strong></td><td>Nơi chạy Python (Khánh đã hướng dẫn)</td><td>Sheet nguồn thay đổi cột &rarr; khôi phục header</td></tr>
+                <tr><td><strong>Permission denied</strong></td><td>IAM &rarr; kiểm tra email có đúng role</td><td>Thêm role BigQuery Admin</td></tr>
+                <tr><td><strong>Looker trắng</strong></td><td>Dashboard &rarr; Edit &rarr; Data sources</td><td>Reconnect data source &rarr; đúng project ID</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 8: TODAY CHECKLIST -->
+<!-- ============================================= -->
+<div class="section" id="today">
+    <div class="section-header">
+        <div class="section-icon gold"><i class="fas fa-clipboard-check"></i></div>
+        <h2 class="section-title">8. Việc Cần Làm Hôm Nay (30/03)</h2>
+    </div>
+
+    <ul class="checklist">
+        <li><strong>GCP IAM:</strong> Thêm Hùng là Owner (Mục 1)<span class="priority critical">CRITICAL</span></li>
+        <li><strong>Test BigQuery:</strong> Hùng đăng nhập &rarr; chạy query thử<span class="priority critical">CRITICAL</span></li>
+        <li><strong>Đổi STAGING_EMAIL:</strong> Code.gs &rarr; it.hero@isconline.vn<span class="priority critical">CRITICAL</span></li>
+        <li><strong>Chuyển owner Sheets:</strong> Tất cả 5 Google Sheets (Mục 1)<span class="priority important">IMPORTANT</span></li>
+        <li><strong>Kiểm tra AppScript:</strong> Mở từng script &rarr; kiểm tra trigger<span class="priority important">IMPORTANT</span></li>
+        <li><strong>Share Looker:</strong> Chia sẻ dashboards cho Hùng và Anh Nam<span class="priority important">IMPORTANT</span></li>
+        <li><strong>Service Account:</strong> Kiểm tra GCP &rarr; IAM &rarr; Service Accounts</li>
+        <li><strong>Billing:</strong> &#10003; Đã xác nhận: ISC company (01A85D-03A1B6-45B6D6)</li>
+        <li><strong>Test toàn bộ:</strong> Hùng tự mở BigQuery, Dashboard, AppScript &mdash; tất cả OK</li>
+        <li><strong>BHXH:</strong> Khánh xin sổ BHXH + giấy xác nhận công tác từ admin</li>
+        <li><strong>Credentials:</strong> Khánh trao tay mật khẩu/key (không ghi trong tài liệu)</li>
+    </ul>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 9: CONTACT -->
+<!-- ============================================= -->
+<div class="section" id="contact">
+    <div class="section-header">
+        <div class="section-icon green"><i class="fas fa-headset"></i></div>
+        <h2 class="section-title">9. Hỗ Trợ Từ Xa</h2>
+    </div>
+
+    <div class="contact-card">
+        <div class="avatar"><i class="fas fa-user"></i></div>
+        <h3>Nguyễn Duy Khánh</h3>
+        <div class="title">Senior Data Engineer &middot; Phản hồi trong ngày</div>
+        <div class="contact-links">
+            <a href="tel:0915055585" class="contact-link phone"><i class="fas fa-phone"></i> 0915 055 585</a>
+            <a href="mailto:dknguyen0105vietnam@gmail.com" class="contact-link email"><i class="fas fa-envelope"></i> dknguyen0105vietnam@gmail.com</a>
+            <a href="https://www.facebook.com/xao.spyde/" target="_blank" class="contact-link fb"><i class="fab fa-facebook"></i> facebook.com/xao.spyde</a>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.82rem;margin-top:1rem">Liên hệ bất kỳ lúc nào &mdash; không giới hạn thời gian hỗ trợ</p>
+    </div>
+</div>
+
+<!-- REFERENCE -->
+<div style="text-align:center;margin-top:2rem">
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:0.5rem;color:var(--gold);text-decoration:none;font-size:0.85rem;font-weight:600;padding:0.6rem 1.2rem;border:1px solid var(--gold-border);border-radius:var(--r-md)"><i class="fas fa-book"></i> Xem báo cáo bàn giao đầy đủ (cho Ban Lãnh Đạo)</a>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <p>Tài liệu bàn giao kỹ thuật &middot; Viết ngày 30/03/2026 bởi <strong>Nguyễn Duy Khánh</strong></p>
+    <p style="margin-top:0.3rem">ISC Digitalization Division &middot; <a href="index.html">Báo cáo chính</a></p>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>
