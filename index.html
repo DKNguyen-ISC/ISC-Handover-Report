@@ -1340,6 +1340,7 @@ p { color: var(--text-body); line-height: 1.75; }
         <a href="#risk"><i class="fa-solid fa-shield-halved"></i> <span>4. Rủi ro / Risk</span></a>
         <a href="#users"><i class="fa-solid fa-users"></i> <span>5. Người dùng / Users</span></a>
         <a href="#support"><i class="fa-solid fa-headset"></i> <span>6. Hỗ trợ / Support</span></a>
+        <a href="hung-it-handover.html" style="margin-top:0.75rem; border-top:1px solid rgba(232,160,32,0.12); padding-top:0.75rem;"><i class="fa-solid fa-screwdriver-wrench"></i> <span>IT Handover (Hùng)</span></a>
     </nav>
     <div class="sidebar-footer">
         ISC Digitalization Division · 2026
@@ -1409,16 +1410,17 @@ p { color: var(--text-body); line-height: 1.75; }
             <div class="traffic-item"><span class="traffic-dot dot-green"></span> M4 Stock AutoSync (5-min) — Self-running</div>
             <div class="traffic-item"><span class="traffic-dot dot-green"></span> Looker Studio Dashboards — Self-running</div>
             <div class="traffic-item"><span class="traffic-dot dot-yellow"></span> Weekly Report Automation — Needs content input</div>
-            <div class="traffic-item"><span class="traffic-dot dot-yellow"></span> Phase 5 BOM Aggregation — 80% complete</div>
-            <div class="traffic-item"><span class="traffic-dot dot-yellow"></span> Phase 8 Tolerance — 90% complete</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> Phase 5 BOM Aggregation — Complete</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> Phase 8 Tolerance — Complete</div>
+            <div class="traffic-item"><span class="traffic-dot dot-green"></span> Phase 12 Data Freshness + Cell Notes — Complete</div>
             <div class="traffic-item"><span class="traffic-dot dot-red"></span> Department Expansion — Needs new developer</div>
         </div>
 
         <!-- Timeline Bar -->
         <h3 class="mb-4"><i class="fa-solid fa-timeline" style="color:var(--gold); margin-right:0.5rem;"></i>Lộ trình Bàn giao / Handover Timeline</h3>
         <div class="timeline-bar">
-            <div class="tbar-phase tbar-1">GĐ 1: Tại VP (27/3 – 3/4)</div>
-            <div class="tbar-phase tbar-2">GĐ 2: Hỗ trợ từ xa (4/4 – 25/4)</div>
+            <div class="tbar-phase tbar-1">GĐ 1: Tại VP (27/3 – 30/3)</div>
+            <div class="tbar-phase tbar-2">GĐ 2: Hỗ trợ từ xa (1/4 – 25/4)</div>
             <div class="tbar-phase tbar-3">GĐ 3: Ad-hoc</div>
         </div>
 
@@ -1670,6 +1672,14 @@ p { color: var(--text-body); line-height: 1.75; }
                 <div class="text-sm text-muted">Cost</div>
                 <div>~$15/month (SC) · expandable ~$50/month</div>
             </div>
+            <div>
+                <div class="text-sm text-muted">Billing Account</div>
+                <div class="font-mono" style="color:var(--green);">01A85D-03A1B6-45B6D6 <span style="font-size:0.72rem; color:var(--text-muted);">(ISC org — not personal ✅)</span></div>
+            </div>
+            <div>
+                <div class="text-sm text-muted">Console</div>
+                <div><a href="https://console.cloud.google.com/bigquery?project=boxwood-charmer-473204-k8" target="_blank" style="color:var(--blue-accent); font-size:0.82rem;">Open BigQuery Console <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i></a></div>
+            </div>
         </div>
 
         <!-- Key Database Assets -->
@@ -1690,18 +1700,60 @@ p { color: var(--text-body); line-height: 1.75; }
             </table>
         </div>
 
+        <!-- ERD Diagrams -->
+        <h3 class="mb-4"><i class="fa-solid fa-diagram-project text-gold"></i> ERD Diagrams (Sơ đồ quan hệ bảng)</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>#</th><th>Diagram</th><th>Link</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>ERD Diagram 1</td><td><a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/cdede40f-baf5-4fa5-be5e-ea58dc589b96/version/v0.1/edit" target="_blank" style="color:var(--blue-accent);">Mở trên Mermaid <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a></td></tr>
+                    <tr><td>2</td><td>ERD Diagram 2</td><td><a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/56f7de02-600d-4018-ac6c-3a0f7f328d1b/version/v0.1/edit" target="_blank" style="color:var(--blue-accent);">Mở trên Mermaid <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a></td></tr>
+                    <tr><td>3</td><td>ERD Diagram 3</td><td><a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/97158902-ef7c-4b06-b3e6-1283a2e9e56c/version/v0.1/edit" target="_blank" style="color:var(--blue-accent);">Mở trên Mermaid <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a></td></tr>
+                    <tr><td>4</td><td>ERD Diagram 4</td><td><a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/e86ac68b-5634-4da8-8ba9-0bf517850664/version/v0.1/edit" target="_blank" style="color:var(--blue-accent);">Mở trên Mermaid <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a></td></tr>
+                    <tr><td>5</td><td>ERD Diagram 5</td><td><a href="https://mermaid.ai/app/projects/438d9f0e-3043-4b72-b36b-97a7fd111669/diagrams/a83a6752-68ed-437e-a192-292f3be00266/version/v0.1/edit" target="_blank" style="color:var(--blue-accent);">Mở trên Mermaid <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a></td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <!-- AppScript Systems -->
         <h3 class="mb-4">AppScript Systems</h3>
         <div class="table-container mb-8">
             <table class="modern-table">
                 <thead>
-                    <tr><th>System</th><th>Codebase</th><th>Trigger</th><th>Function</th></tr>
+                    <tr><th>System</th><th>Codebase</th><th>Trigger</th><th>Function</th><th>Link</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>SC Automation</td><td>Bound scripts in data sheets</td><td>Event-based + time-based</td><td>Shortage alerts, escalation, M4 sync</td></tr>
-                    <tr><td>Weekly Report</td><td>Code.gs V7 + SheetBuilder.gs V7</td><td>Friday 7 AM</td><td>HTML email → Kent, auto-log</td></tr>
+                    <tr><td>Weekly Report</td><td>Code.gs V7 + SheetBuilder.gs V7</td><td>Friday 7 AM</td><td>HTML email → Kent, auto-log</td><td><a href="https://docs.google.com/spreadsheets/d/1W_F2zwYknKBSDw2yKFi-q3a5sozkyCJ5zCupo4JmwqU/edit" target="_blank" style="color:var(--blue-accent);">Sheet → Apps Script <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a></td></tr>
+                    <tr><td>SC Core Library</td><td>ISC_SCM_Core_Lib (standalone)</td><td>Event-based</td><td>Shortage alert logic + ETL functions</td><td><a href="https://script.google.com/home/projects/1d76OHEfMVbrgCf3QC_PrqlMGVjVwUuyBe8SbT27JdcKrMUyGHmdWzze3/edit" target="_blank" style="color:var(--blue-accent);">Open Script <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a></td></tr>
+                    <tr><td>SC Shortage Alerts</td><td>Bound scripts in M1-M4 sheets</td><td>Event-based + time-based</td><td>Shortage alerts, escalation, M4 sync</td><td>Open each Sheet → Extensions → Apps Script</td></tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Google Sheets Inventory -->
+        <h3 class="mb-4"><i class="fa-solid fa-table text-gold"></i> Google Sheets — Danh sách & URL</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>#</th><th>Sheet</th><th>Chức năng</th><th>Owner</th><th>Link</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td class="font-mono" style="font-size:0.78rem;">ISC_DigitalizationReport_4PMFriday</td><td>Báo cáo tuần cho Kent (5W-2H) + AppScript Weekly Report</td><td>dk@isconline.vn</td><td><a href="https://docs.google.com/spreadsheets/d/1W_F2zwYknKBSDw2yKFi-q3a5sozkyCJ5zCupo4JmwqU/edit?gid=123704342#gid=123704342" target="_blank" style="color:var(--blue-accent);">Open <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i></a></td></tr>
+                    <tr><td>2</td><td class="font-mono" style="font-size:0.78rem;">ISC_Input_M1_Planning</td><td>Dữ liệu nguồn Module M1 — Demand Planning</td><td>dk@isconline.vn</td><td><a href="https://docs.google.com/spreadsheets/d/1NPyHUV6wTHmeuKl-dvMUW0adOSDNlWlL5dpMFxLmCQk/edit?gid=1283095199#gid=1283095199" target="_blank" style="color:var(--blue-accent);">Open <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i></a></td></tr>
+                    <tr><td>3</td><td class="font-mono" style="font-size:0.78rem;">ISC_Module_M2_Balancing</td><td>Dữ liệu nguồn Module M2 — Supply-Demand Balancing</td><td>dk@isconline.vn</td><td><a href="https://docs.google.com/spreadsheets/d/1-h_32qqHavmWBUHQAU4PYRrNY3k5yIvo3Ruf5fGYtP4/edit?gid=571918061#gid=571918061" target="_blank" style="color:var(--blue-accent);">Open <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i></a></td></tr>
+                    <tr><td>4</td><td class="font-mono" style="font-size:0.78rem;">ISC_Module_M3_Procurement</td><td>Dữ liệu nguồn Module M3 — Procurement / Mua hàng</td><td>dk@isconline.vn</td><td><a href="https://docs.google.com/spreadsheets/d/1Yez9gLqOiouNCtjtOO0QRSvEZ2g34Hl7jOYVhMOpQ0Q/edit?gid=309071726#gid=309071726" target="_blank" style="color:var(--blue-accent);">Open <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i></a></td></tr>
+                    <tr><td>5</td><td class="font-mono" style="font-size:0.78rem;">ISC_Module_M4_Execution</td><td>Dữ liệu nguồn Module M4 — Delivery & Stock</td><td>dk@isconline.vn</td><td><a href="https://docs.google.com/spreadsheets/d/1VHN7uOiEuAImISd45rl13_yDUQRbvSQR9yNuyNXQzWs/edit?gid=1292826155#gid=1292826155" target="_blank" style="color:var(--blue-accent);">Open <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i></a></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="standout-box mb-8">
+            <i class="fa-solid fa-triangle-exclamation" style="color:var(--gold); font-size:1.1rem;"></i>
+            <div>
+                <strong style="color:var(--text-heading);">Chuyển owner tất cả Sheets:</strong>
+                <span class="text-sm" style="color:var(--text-body);"> Mở Sheet → Share → Thêm email Hùng (Editor) → Click ⚙️ → "Make owner". Làm cho tất cả 5 sheets trước khi dk@isconline.vn bị xóa.</span>
+            </div>
         </div>
 
         <!-- Automation Schedule -->
@@ -1814,10 +1866,10 @@ p { color: var(--text-body); line-height: 1.75; }
                 <div class="ho-phase-header">
                     <div class="ho-phase-icon icon-office"><i class="fa-solid fa-building"></i></div>
                     <div class="ho-phase-title">Giai đoạn 1 — Tại Văn phòng / At Office</div>
-                    <div class="ho-phase-dates">27/3 – 3/4</div>
+                    <div class="ho-phase-dates">27/3 – 30/3</div>
                 </div>
 
-                <div class="ho-day today">
+                <div class="ho-day">
                     <div class="ho-day-date">T4 · 27/03</div>
                     <div class="ho-day-content"><strong>Ngày bắt đầu bàn giao</strong> — Tổng hợp danh mục hệ thống, bắt đầu viết tài liệu kiến trúc BigQuery <span class="ho-tag ho-tag-doc">Documentation</span></div>
                 </div>
@@ -1829,21 +1881,9 @@ p { color: var(--text-body); line-height: 1.75; }
                     <div class="ho-day-date">T6 · 29/03</div>
                     <div class="ho-day-content"><strong>Tài liệu Module M3 + M4</strong> — "The Automated Buyer" & "The Truth Engine", README cho từng repo <span class="ho-tag ho-tag-doc">Documentation</span></div>
                 </div>
-                <div class="ho-day">
-                    <div class="ho-day-date">T2 · 31/03</div>
-                    <div class="ho-day-content"><strong>Hướng dẫn vận hành</strong> — Step-by-step guides cho AppScript automation, ETL pipelines, Weekly Report system <span class="ho-tag ho-tag-doc">Documentation</span></div>
-                </div>
-                <div class="ho-day">
-                    <div class="ho-day-date">T3 · 01/04</div>
-                    <div class="ho-day-content"><strong>Chuyển quyền hệ thống</strong> — BigQuery project ownership, Google Sheets, AppScript deployments → Hùng <span class="ho-tag ho-tag-transfer">Transfer</span></div>
-                </div>
-                <div class="ho-day">
-                    <div class="ho-day-date">T4 · 02/04</div>
-                    <div class="ho-day-content"><strong>Bàn giao trực tiếp cho Hùng</strong> — Walkthrough session: demo hệ thống, Q&A, đóng gói HTML reports <span class="ho-tag ho-tag-transfer">Transfer</span></div>
-                </div>
-                <div class="ho-day">
-                    <div class="ho-day-date">T5 · 03/04</div>
-                    <div class="ho-day-content"><strong>Ngày làm việc cuối tại VP</strong> — Báo cáo tiến độ cho Nam Ho, kiểm tra trạng thái tất cả hệ thống, hoàn thiện tài liệu còn thiếu <span class="ho-tag ho-tag-review">Final Review</span></div>
+                <div class="ho-day today">
+                    <div class="ho-day-date">T2 · 30/03</div>
+                    <div class="ho-day-content"><strong>Ngày làm việc cuối tại VP</strong> — Chuyển quyền BigQuery + Google Sheets → Hùng, bàn giao trực tiếp, báo cáo tiến độ cho Nam Ho, hoàn thiện tài liệu còn thiếu <span class="ho-tag ho-tag-review">Final Review</span> <span class="ho-tag ho-tag-transfer">Transfer</span></div>
                 </div>
             </div>
 
@@ -1852,11 +1892,11 @@ p { color: var(--text-body); line-height: 1.75; }
                 <div class="ho-phase-header phase-remote">
                     <div class="ho-phase-icon icon-remote"><i class="fa-solid fa-wifi"></i></div>
                     <div class="ho-phase-title">Giai đoạn 2 — Hỗ trợ Từ xa / Remote Support</div>
-                    <div class="ho-phase-dates">4/4 – 25/4</div>
+                    <div class="ho-phase-dates">1/4 – 25/4</div>
                 </div>
 
                 <div class="ho-day">
-                    <div class="ho-day-date">T6 · 04/04</div>
+                    <div class="ho-day-date">T3 · 01/04</div>
                     <div class="ho-day-content"><strong>Bắt đầu hỗ trợ từ xa</strong> — Mỗi tối 19:00–20:30, phản hồi Zalo/WeChat ban ngày nếu cần gấp <span class="ho-tag ho-tag-support">Support</span></div>
                 </div>
                 <div class="ho-day">
@@ -1904,16 +1944,17 @@ p { color: var(--text-body); line-height: 1.75; }
                     <tr><td>5</td><td>Weekly Report System — 5W-2H AppScript</td><td>1</td><td><span class="status-tag tag-running">✅ Running</span></td><td>Code.gs docs + config</td><td>Hùng / Nam Ho</td></tr>
                     <tr><td>6</td><td>5W-2H Report Framework + Templates</td><td>1</td><td><span class="status-tag tag-running">✅ Running</span></td><td>Template + process doc</td><td>Nam Ho</td></tr>
                     <tr><td>7</td><td>Code repositories (all)</td><td>1→2</td><td><span class="status-tag tag-progress">🟡 Updating</span></td><td>README per repo</td><td>Hùng</td></tr>
-                    <tr><td>8</td><td>Phase 5: BOM Aggregation (80%)</td><td>1→2</td><td><span class="status-tag tag-progress">🟡 In progress</span></td><td>Implementation plan + code</td><td>Successor</td></tr>
-                    <tr><td>9</td><td>Phase 8: Tolerance Resolution (90%)</td><td>1→2</td><td><span class="status-tag tag-progress">🟡 In progress</span></td><td>Analysis doc + SQL</td><td>Successor</td></tr>
+                    <tr><td>8</td><td>Phase 5: BOM Aggregation</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>Implementation plan + code</td><td>Hùng</td></tr>
+                    <tr><td>9</td><td>Phase 8: Tolerance Resolution</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>Analysis doc + SQL</td><td>Hùng</td></tr>
                     <tr><td>10</td><td>Assign Sourcing Analysis (HTML report)</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>HTML report files</td><td>Nam Ho</td></tr>
                     <tr><td>11</td><td>OpenClaw Evaluation (HTML report)</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>HTML report files</td><td>Kent</td></tr>
                     <tr><td>12</td><td>TanLien Salary Intelligence</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>HTML report</td><td>Kent / HR</td></tr>
                     <tr><td>13</td><td>QR Code / Barcode Research</td><td>2</td><td><span class="status-tag tag-done">✅ Done</span></td><td>Analysis doc</td><td>Kent</td></tr>
                     <tr><td>14</td><td>SOP AI Pipeline documentation</td><td>2</td><td><span class="status-tag tag-done">✅ Done</span></td><td>Process doc</td><td>Nam Ho</td></tr>
                     <tr><td>15</td><td>Enterprise DT Roadmap (PPTX)</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>19-slide PPTX</td><td>Kent / Nam Ho</td></tr>
-                    <tr><td>16</td><td>Account / Access transfers</td><td>1</td><td><span class="status-tag tag-pending">⏳ Pending</span></td><td>Credentials inventory</td><td>Hùng</td></tr>
+                    <tr><td>16</td><td>Account / Access transfers</td><td>1</td><td><span class="status-tag tag-progress">🟡 In progress</span></td><td>Credentials inventory</td><td>Hùng</td></tr>
                     <tr><td>17</td><td>Active user transition (Ngàn, Phương, Nam)</td><td>2</td><td><span class="status-tag tag-pending">⏳ Pending</span></td><td>Usage guides</td><td>Hùng / Successor</td></tr>
+                    <tr><td>18</td><td>Phase 12: Data Freshness + Cell Notes + FIFO Report</td><td>1</td><td><span class="status-tag tag-done">✅ Done</span></td><td>FIFO Engine Report HTML</td><td>Nam Ho</td></tr>
                 </tbody>
             </table>
         </div>
@@ -1921,7 +1962,7 @@ p { color: var(--text-body); line-height: 1.75; }
         <!-- GĐ 1 Deliverables -->
         <div class="grid-2">
             <div>
-                <h4 class="mb-4" style="color:var(--gold-bright);"><i class="fa-solid fa-building" style="margin-right:0.4rem;"></i>GĐ 1 — Tại VP (27/3 – 3/4)</h4>
+                <h4 class="mb-4" style="color:var(--gold-bright);"><i class="fa-solid fa-building" style="margin-right:0.4rem;"></i>GĐ 1 — Tại VP (27/3 – 30/3)</h4>
                 <ul class="checklist">
                     <li>Hoàn thiện tài liệu kỹ thuật 4 module BigQuery</li>
                     <li>Thêm code comments + README cho từng repo</li>
@@ -1935,7 +1976,7 @@ p { color: var(--text-body); line-height: 1.75; }
                 </ul>
             </div>
             <div>
-                <h4 class="mb-4" style="color:var(--blue-accent);"><i class="fa-solid fa-wifi" style="margin-right:0.4rem;"></i>GĐ 2 — Từ xa (4/4 – 25/4)</h4>
+                <h4 class="mb-4" style="color:var(--blue-accent);"><i class="fa-solid fa-wifi" style="margin-right:0.4rem;"></i>GĐ 2 — Từ xa (1/4 – 25/4)</h4>
                 <ul class="checklist">
                     <li>Hỗ trợ kỹ thuật mỗi tối 19:00 – 20:30</li>
                     <li>Phản hồi Zalo/WeChat ban ngày nếu cần gấp</li>
@@ -1974,8 +2015,8 @@ p { color: var(--text-body); line-height: 1.75; }
                     <tr><td>AppScript SC Alerts</td><td>🟢 Running</td><td>None</td><td><span class="risk-badge risk-low">Low</span></td><td>Emails continue automatically</td><td>No maintenance</td></tr>
                     <tr><td>Weekly Report</td><td>🟡 Needs input</td><td>Content author gone</td><td><span class="risk-badge risk-medium">Medium</span></td><td>Report meaningless without input</td><td>Train successor</td></tr>
                     <tr><td>Looker Studio</td><td>🟢 Running</td><td>None</td><td><span class="risk-badge risk-low">Low</span></td><td>Auto-refresh from BigQuery</td><td>No action</td></tr>
-                    <tr><td>Phase 5 BOM Agg</td><td>🟡 80%</td><td>Unfinished</td><td><span class="risk-badge risk-high">High</span></td><td>50% VPO waste continues</td><td>Remote / successor</td></tr>
-                    <tr><td>Phase 8 Tolerance</td><td>🟡 90%</td><td>Unfinished</td><td><span class="risk-badge risk-medium">Medium</span></td><td>CS tolerance only, no ISC buffer</td><td>Near-complete</td></tr>
+                    <tr><td>Phase 5 BOM Agg</td><td>🟢 Done</td><td>None</td><td><span class="risk-badge risk-low">Low</span></td><td>Completed — aggregated session live</td><td>Completed</td></tr>
+                    <tr><td>Phase 8 Tolerance</td><td>🟢 Done</td><td>None</td><td><span class="risk-badge risk-low">Low</span></td><td>Completed — dual-tolerance in view</td><td>Completed</td></tr>
                     <tr><td>Dept Expansion</td><td>🔴 Discovery</td><td>No developer</td><td><span class="risk-badge risk-high">High</span></td><td>6 depts stay manual</td><td>Hire new DE</td></tr>
                     <tr><td>Weekly Report Content</td><td>🔴 Manual</td><td>No author</td><td><span class="risk-badge risk-high">High</span></td><td>Kent loses visibility</td><td>Train on 5W-2H</td></tr>
                 </tbody>
@@ -2023,8 +2064,44 @@ p { color: var(--text-body); line-height: 1.75; }
             <div class="dep-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
             <div>
                 <div class="dep-trigger">dk@isconline.vn deactivated</div>
-                <div class="dep-effect">→ Weekly report review gate breaks — change SEND_TO in Code.gs config</div>
+                <div class="dep-effect">→ Weekly report review gate breaks — change STAGING_EMAIL in Code.gs config</div>
             </div>
+        </div>
+
+        <!-- Critical Warnings -->
+        <h3 class="mb-4 mt-6"><i class="fa-solid fa-exclamation-circle" style="color:var(--red); margin-right:0.4rem;"></i>Cảnh báo Quan trọng / Critical Warnings</h3>
+        <div class="table-container mb-8">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>#</th><th>Rủi ro</th><th>Mức độ</th><th>Hậu quả</th><th>Cách khắc phục</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><strong>dk@isconline.vn bị xóa</strong> trước khi đổi STAGING_EMAIL</td><td><span class="risk-badge risk-high">Cao</span></td><td>Weekly Report gửi vào email không tồn tại → Kent không nhận báo cáo</td><td>Đổi STAGING_EMAIL trong Code.gs ngay</td></tr>
+                    <tr><td>2</td><td><strong>GCP Project không có owner khác</strong></td><td><span class="risk-badge risk-high">Cao</span></td><td>Toàn bộ BigQuery, dashboards, ETL ngừng hoạt động</td><td>Thêm Hùng làm Owner trong IAM</td></tr>
+                    <tr><td>3</td><td><strong>Không ai điền Weekly_Input</strong></td><td><span class="risk-badge risk-medium">T.Bình</span></td><td>Báo cáo gửi Kent với nội dung trống/cũ</td><td>Anh Nam hoặc successor điền mỗi tuần</td></tr>
+                    <tr><td>4</td><td><strong>Google Sheets bị xóa</strong></td><td><span class="risk-badge risk-medium">T.Bình</span></td><td>ETL pipeline fail (BigQuery data vẫn còn)</td><td>Chuyển owner tất cả Sheets cho Hùng</td></tr>
+                    <tr><td>5</td><td><strong>Scheduled query fail</strong></td><td><span class="risk-badge risk-low">Thấp</span></td><td>MRP hoặc stock sync dừng tạm</td><td>Kiểm tra BigQuery → Scheduled queries → log</td></tr>
+                    <tr><td>6</td><td><strong>Cần thay đổi logic SQL</strong></td><td><span class="risk-badge risk-medium">T.Bình</span></td><td>Cần người biết SQL/BigQuery</td><td>Liên hệ Khánh hoặc tuyển DE mới</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Troubleshooting Guide -->
+        <h3 class="mb-4"><i class="fa-solid fa-wrench text-gold"></i> Xử lý Sự cố / Troubleshooting Guide</h3>
+        <div class="table-container">
+            <table class="modern-table">
+                <thead>
+                    <tr><th>Vấn đề</th><th>Kiểm tra</th><th>Cách sửa</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Dashboard không cập nhật</td><td>BigQuery Console → Scheduled queries → xem query nào FAILED</td><td>Click vào query failed → xem log → liên hệ Khánh nếu không hiểu</td></tr>
+                    <tr><td>SC Alert không gửi email</td><td>Sheet → Extensions → Apps Script → Triggers → xem status</td><td>Nếu trigger bị disabled → Enable lại. Nếu vẫn fail → gọi Khánh</td></tr>
+                    <tr><td>Weekly Report không gửi</td><td>(1) STAGING_EMAIL đúng chưa? (2) Trigger có active?</td><td>Đổi STAGING_EMAIL + kiểm tra trigger (xem AppScript section)</td></tr>
+                    <tr><td>ETL pipeline fail</td><td>Kiểm tra nơi chạy Python script</td><td>Thường do Sheet nguồn thay đổi cột → khôi phục header → gọi Khánh</td></tr>
+                    <tr><td>BigQuery báo "permission denied"</td><td>IAM → kiểm tra email có đúng role không</td><td>Thêm role BigQuery Admin cho email bị denied</td></tr>
+                    <tr><td>Looker Dashboard trắng</td><td>Dashboard → Edit → Data sources</td><td>Reconnect data source → chọn đúng project ID</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </section>
@@ -2097,7 +2174,7 @@ p { color: var(--text-body); line-height: 1.75; }
                     <tr><th>Phase</th><th>Thời gian</th><th>Tần suất</th><th>Kênh</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>GĐ 2 (4/4 – 25/4)</td><td>19:00 – 20:30 mỗi tối</td><td>Hàng ngày / Daily</td><td>Zalo, WeChat, Email</td></tr>
+                    <tr><td>GĐ 2 (1/4 – 25/4)</td><td>19:00 – 20:30 mỗi tối</td><td>Hàng ngày / Daily</td><td>Zalo, WeChat, Email</td></tr>
                     <tr><td>GĐ 2 (urgent)</td><td>Giờ hành chính</td><td>Theo yêu cầu</td><td>Zalo, WeChat</td></tr>
                     <tr><td>GĐ 3 (25/4+)</td><td>Theo yêu cầu</td><td>Ad-hoc</td><td>Zalo, WeChat</td></tr>
                 </tbody>
@@ -2136,7 +2213,7 @@ p { color: var(--text-body); line-height: 1.75; }
             <p><strong>Giám sát bàn giao:</strong> Hồ Nam — SC Manager / Trưởng Ban Số Hóa</p>
             <p><strong>Tiếp nhận kỹ thuật:</strong> Hùng — IT Admin</p>
             <p><strong>Lãnh đạo phê duyệt:</strong> Kent Huỳnh</p>
-            <p class="mt-4"><strong>Ngày:</strong> 26/03/2026</p>
+            <p class="mt-4"><strong>Ngày:</strong> 30/03/2026</p>
         </div>
     </div>
 </section>
@@ -2161,7 +2238,7 @@ p { color: var(--text-body); line-height: 1.75; }
         <div class="tl-cursor" id="tlCursor"></div>
         <!-- Phase labels -->
         <div class="tl-label lb-start reached">27/3 Bắt đầu</div>
-        <div class="tl-label lb-gd1">3/4 GĐ 1</div>
+        <div class="tl-label lb-gd1">30/3 GĐ 1</div>
         <div class="tl-label lb-gd2">25/4 GĐ 2</div>
         <div class="tl-label lb-gd3">Ad-hoc</div>
     </div>
